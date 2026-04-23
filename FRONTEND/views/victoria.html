@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuizLive – Victory</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --cream:#F8F5F0; 
+      --black:#111;
+      --purple:#6B2FA0;
+      --yellow:#F5C400;
+      --pink: #e65b89; 
+      --white:#fff;
+      --border:4px solid var(--black);
+      --shadow:5px 5px 0 var(--black);
+      --shadow-lg:8px 8px 0 var(--black);
+      --radius:16px;
+    }
+
+    body{
+      font-family:'Nunito',sans-serif;
+      background:var(--purple);
+      background-image:radial-gradient(circle,rgba(255,255,255,.07) 1.5px,transparent 1.5px);
+      background-size:30px 30px;
+      min-height:100vh;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* ===== TOP TITLE ===== */
+    .winner-title{
+      font-family:'Fredoka One',cursive;
+      font-size:clamp(2.5rem, 6vw, 4rem);
+      color:var(--white);
+      text-align:center;
+      text-transform: uppercase;
+      text-shadow:4px 4px 0 var(--black);
+      margin-bottom: 3rem;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      max-width: 1100px;
+      width: 100%;
+      align-items: center; /* Centrado vertical entre los dos bloques */
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; gap: 2rem; }
+    }
+
+    /* ===== WINNER DISPLAY (QUOTE STYLE) ===== */
+    .winner-display-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .winner-display-wrap { flex-direction: column; text-align: center; }
+    }
+
+    .winner-visual {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .burst-bg {
+      background: var(--pink);
+      width: clamp(180px, 20vh, 220px);
+      height: clamp(180px, 20vh, 220px);
+      clip-path: polygon(50% 0%, 61% 14%, 78% 8%, 82% 26%, 98% 28%, 91% 45%, 100% 60%, 86% 72%, 91% 89%, 73% 91%, 67% 100%, 50% 92%, 33% 100%, 27% 91%, 9% 89%, 14% 72%, 0% 60%, 9% 45%, 2% 28%, 18% 26%, 22% 8%, 39% 14%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      filter: drop-shadow(4px 4px 0px var(--black));
+    }
+
+    .avatar-circle {
+      background: #5C87C1; 
+      width: 55%;
+      height: 55%;
+      border-radius: 50%;
+      border: var(--border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(3rem, 8vh, 5rem);
+      box-shadow: inset -5px -5px 0 rgba(0,0,0,0.1);
+    }
+
+    .quote-box {
+      background: var(--cream);
+      border: var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      position: relative;
+      box-shadow: var(--shadow);
+      flex: 1;
+    }
+
+    .quote-box::before {
+      content: '';
+      position: absolute;
+      left: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-right: 18px solid var(--black);
+    }
+
+    @media (max-width: 900px) {
+      .quote-box::before {
+        left: 50%;
+        top: -25px;
+        transform: translateX(-50%) rotate(90deg);
+      }
+    }
+
+    .quote-text {
+      font-size: clamp(1.2rem, 3vh, 1.6rem);
+      font-weight: 800;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .quote-author {
+      text-align: right;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: var(--purple);
+      text-transform: uppercase;
+    }
+
+    /* ===== LEADERBOARD SECTION ===== */
+    .leaderboard-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .leaderboard-title {
+      font-family:'Fredoka One',cursive;
+      font-size: 1.5rem;
+      background: var(--cream);
+      border: var(--border);
+      padding: 0.4rem 1.2rem;
+      display: inline-block;
+      align-self: flex-start;
+      transform: skew(-5deg);
+      box-shadow: 4px 4px 0 var(--black);
+    }
+
+    .results{
+      display:flex;
+      flex-direction:column;
+      gap:.6rem;
+    }
+
+    .result-row{
+      background:var(--cream);
+      border:var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:.8rem 1.2rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:800;
+    }
+
+    .pos{ font-family:'Fredoka One',cursive; width:40px; }
+    .score-small { font-family:'Fredoka One',cursive; color: var(--purple); }
+
+    /* ===== ACTION BUTTONS (CENTERED AT BOTTOM) ===== */
+    .btns-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 4rem; /* Espacio extra para separar del layout */
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .btn-action{
+      flex: 1;
+      padding: 1rem 2rem;
+      border: var(--border);
+      border-radius: var(--radius);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: .1s;
+      text-align: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .btn-action:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-lg); }
+    .btn-action:active{ transform: translate(4px,4px); box-shadow: 2px 2px 0 var(--black); }
+
+    .btn-home{ background:var(--cream); color:var(--black); }
+    .btn-replay{ background:var(--yellow); color:var(--black); }
+
+    /* CONFETTI */
+    .confetti{
+      position:fixed;
+      width:10px;height:10px;
+      top:-20px;
+      z-index: 100;
+      animation:fall 3s linear infinite;
+    }
+
+    @keyframes fall{
+      to{transform:translateY(110vh) rotate(360deg)}
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="confetti-container"></div>
+
+<h1 class="winner-title">Diego is the winner!</h1>
+
+<div class="main-layout">
+  
+  <section class="winner-display-wrap">
+    <div class="winner-visual">
+      <div class="burst-bg">
+        <div class="avatar-circle">🧔</div>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      <p class="quote-text">"Victory is mine,<br> and so is the pizza 🍕"</p>
+      <p class="quote-author">— Diego</p>
+    </div>
+  </section>
+
+  <section class="leaderboard-section">
+    <div class="leaderboard-title">Leaderboard</div>
+    
+    <div class="results">
+      <div class="result-row">
+        <span class="pos">1st</span>
+        <span class="name">Diego</span>
+        <span class="score-small">8200</span>
+      </div>
+      <div class="result-row">
+        <span class="pos">2nd</span>
+        <span class="name">Mari</span>
+        <span class="score-small">6900</span>
+      </div>
+      <div class="result-row">
+        <span class="pos">3rd</span>
+        <span class="name">Luis</span>
+        <span class="score-small">5600</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="btns-container">
+  <a href="index.html" class="btn-action btn-home">Home</a>
+  <a href="host-sala.html" class="btn-action btn-replay">Play Again</a>
+</div>
+
+<script>
+const container=document.getElementById('confetti-container');
+const colors=['#F5C400','#C4281A','#1A8C3C','#1A5FA0','#6B2FA0'];
+
+for(let i=0;i<60;i++){
+  const c=document.createElement('div');
+  c.className='confetti';
+  c.style.left=Math.random()*100+'vw';
+  c.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+  c.style.animationDuration=(Math.random()*2+2)+'s';
+  c.style.animationDelay=Math.random()*2+'s';
+  container.appendChild(c);
+}
+</script>
+
+</body>
+</html>
