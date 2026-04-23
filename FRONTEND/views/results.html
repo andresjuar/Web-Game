@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RicoQuiz - Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream-1:   #EAE0C8; 
+      --cream-2:   #DFD4BA; 
+      --cream-3:   #D4C8AC; 
+      --black:     #111111;
+      --purple:    #6C35A6;
+      --yellow:    #F5C400;
+      --white:     #FFFFFF;
+      --border:    4px solid var(--black);
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--purple);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; 
+      padding: 0;
+    }
+
+    /* ════════ HEADER ════════ */
+    .header-area {
+      padding: clamp(1rem, 3vh, 2rem) 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .results-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.8rem, 5vh, 3rem);
+      color: var(--white);
+      text-transform: uppercase;
+      text-shadow: 4px 4px 0px var(--black);
+      transform: rotate(-1deg);
+      text-align: center;
+    }
+
+    .btn-next {
+      padding: 0.6rem 2.5rem;
+      background: var(--yellow);
+      border: var(--border);
+      border-radius: 12px;
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1rem, 2vh, 1.2rem);
+      color: var(--black);
+      box-shadow: 4px 4px 0 var(--black);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.1s;
+    }
+    .btn-next:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--black); }
+
+    /* ════════ ÁREA DE CARTAS ANCLADAS ════════ */
+    .stack-area {
+      flex-grow: 1;
+      position: relative;
+      width: 100%;
+      min-height: 400px;
+    }
+
+    .layer {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      border: var(--border);
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    .layer-1 {
+      z-index: 1;
+      background: var(--cream-1);
+      width: 95%; 
+      height: 90%;
+      min-width: 300px;
+      border-radius: clamp(50px, 10vw, 80px) 0 0 0;
+    }
+
+    .layer-2 {
+      z-index: 2;
+      background: var(--cream-2);
+      width: clamp(280px, 80%, 85%);
+      height: 70%;
+      border-radius: clamp(40px, 8vw, 60px) 0 0 0;
+    }
+
+    .layer-3 {
+      z-index: 3;
+      background: var(--cream-3);
+      width: clamp(260px, 65%, 75%);
+      height: 45%;
+      border-radius: clamp(30px, 6vw, 40px) 0 0 0;
+    }
+
+    /* ════════ CONTENIDO ════════ */
+    .content-row {
+      padding-top: clamp(0.8rem, 3vh, 1.5rem);
+      padding-left: clamp(2rem, 8vw, 5rem);
+      padding-right: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .player-info {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .player-tag {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(0.7rem, 1.5vh, 1rem);
+      color: var(--purple);
+      text-transform: uppercase;
+      margin-bottom: -0.2rem;
+    }
+
+    .avatar-circle {
+      width: clamp(55px, 10vh, 90px);
+      height: clamp(55px, 10vh, 90px);
+      border: var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.8rem, 4vh, 3rem);
+      background-color: var(--white);
+      box-shadow: 4px 4px 0 var(--black);
+      flex-shrink: 0;
+    }
+
+    .player-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.4rem, 4.5vh, 3rem);
+      color: var(--black);
+      line-height: 1;
+      text-transform: uppercase;
+      max-width: 15vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .points {
+      margin-left: auto;
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.6rem, 5.5vh, 4rem);
+      color: var(--purple);
+      white-space: nowrap;
+    }
+
+    .others-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      padding-left: clamp(2rem, 8vw, 5rem);
+      padding-right: 2rem;
+      padding-top: 0.5rem;
+    }
+
+    .mini-player {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .mini-player-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .avatar-mini {
+      width: clamp(55px, 10vh, 90px);
+      height: clamp(55px, 10vh, 90px);
+      border: var(--border);
+      border-radius: 50%;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.8rem, 4vh, 3rem);
+      box-shadow: 4px 4px 0 var(--black);
+      flex-shrink: 0;
+    }
+
+    .name-mini {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.4rem, 4.5vh, 3rem);
+      color: var(--black);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .score-mini {
+      margin-left: auto;
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.6rem, 5.5vh, 4rem);
+      color: var(--purple);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-area">
+    <h1 class="results-title">EVERYONE'S SCORES SO FAR...</h1>
+    <a href="#" class="btn-next">Next Round ➔</a>
+  </div>
+
+  <div class="stack-area">
+    
+    <div class="layer layer-1">
+      <div class="content-row">
+        <div class="avatar-circle">🧔🏻‍♂️</div>
+        <div class="player-info">
+          <span class="player-tag">Actually the goat</span> 
+          <span class="player-name">DIEGO</span>
+        </div>
+        <div class="points">8200</div>
+      </div>
+    </div>
+
+    <div class="layer layer-2">
+      <div class="content-row">
+        <div class="avatar-circle">👩🏻</div>
+        <div class="player-info">
+          <span class="player-tag">2° PLACE is the 1° PLACE for losers. Yikes.</span>
+          <span class="player-name">MARI</span>
+        </div>
+        <div class="points">6900</div>
+      </div>
+    </div>
+
+    <div class="layer layer-3">
+      <div class="content-row" style="padding-bottom: 0.5rem;">
+        <span class="player-tag">Were you guys even playing?</span>
+      </div>
+      <div class="others-grid">
+        <div class="mini-player">
+          <div class="avatar-mini">👦🏽</div>
+          <div class="mini-player-info">
+            <span class="name-mini">LUIS</span>
+          </div>
+          <div class="score-mini">4200</div>
+        </div>
+        <div class="mini-player">
+          <div class="avatar-mini">👱🏼‍♀️</div>
+          <div class="mini-player-info">
+            <span class="name-mini">SOFÍA</span>
+          </div>
+          <div class="score-mini">3150</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
