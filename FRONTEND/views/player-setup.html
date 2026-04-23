@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>RicoQuiz - Player setup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:        #EAE0C8;
+      --black:        #111111;
+      --purple:       #6C35A6;
+      --green:        #389854;
+      --yellow:       #F5C400;
+      --white:        #FFFFFF;
+      --border:       4px solid var(--black);
+      --shadow:       6px 6px 0px var(--black);
+      --radius:       8px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--black);
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .mobile-container {
+      width: 100%;
+      max-width: 480px;
+      height: 100%;
+      background-color: var(--cream);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* HEADER */
+    .header {
+      background-color: var(--purple);
+      padding: 1.5rem 1rem;
+      border-bottom: var(--border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+    }
+
+    .logo-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      line-height: 1;
+      color: var(--black);
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      background: var(--yellow);
+      padding: 0.5rem 1.5rem;
+      border: 3px solid var(--black);
+      border-radius: 12px;
+      box-shadow: 4px 4px 0px var(--black);
+      transform: rotate(-2deg);
+    }
+
+    .logo-text span { 
+      color: var(--purple); 
+    }
+
+    .content {
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 2rem;
+      overflow-y: auto;
+      justify-content: center;
+    }
+
+    /* SELECTOR DE AVATAR */
+    .avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .avatar-selector {
+      width: 140px;
+      height: 140px;
+      background-color: var(--white);
+      border: var(--border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .avatar-selector:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+    .avatar-selector:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--black);
+    }
+
+    .edit-badge {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      background-color: var(--yellow);
+      border: 3px solid var(--black);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 3px 3px 0 var(--black);
+    }
+
+    /* FORMULARIO */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .form-group label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: var(--black);
+      text-transform: uppercase;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1.2rem 1rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--black);
+      background-color: var(--white);
+      border: var(--border);
+      outline: none;
+      box-shadow: 4px 4px 0 var(--black);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .form-group input:focus {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--purple);
+      border-color: var(--purple);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(17, 17, 17, 0.4);
+    }
+
+    /* CONTENEDOR DEL BOTÓN */
+    .footer {
+      padding: 1.5rem;
+      background-color: transparent;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+
+    /* BOTÓN LISTO */
+    .btn-ready {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--green);
+      border: var(--border);
+      color: var(--white);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-ready:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 var(--black);
+    }
+    .btn-ready:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--black);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    
+    <div class="header">
+      <div class="logo-text">RICO<span>QUIZ</span></div>
+    </div>
+
+    <div class="content">
+
+      <div class="avatar-wrapper">
+        <div class="avatar-selector" onclick="alert('Aquí se abrirá el modal para elegir avatares')">
+          👤
+          <div class="edit-badge">✏️</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="playerName">Your name</label>
+        <input type="text" id="playerName" value="Jugador1" placeholder="Ej. Diego" />
+      </div>
+
+      <div class="form-group">
+        <label for="victoryQuote">Victory Quote</label>
+        <input type="text" id="victoryQuote" placeholder="Ej. ¡La victoria es mía y la pizza también!" />
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="btn-ready" onclick="window.location='jugador-espera.html'">
+        I'M READY! ✓
+      </button>
+    </div>
+
+  </div>
+
+</body>
+</html>
