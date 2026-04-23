@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizLive – Loading</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #EAE0C8;
+  --black: #111111;
+  --purple: #6C35A6;
+  --yellow: #F5C400;
+  --white: #FFFFFF;
+  --border: 4px solid var(--black);
+  --shadow: 6px 6px 0px var(--black);
+}
+
+/* ════════ BODY ════════ */
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--purple);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+  background-size: 30px 30px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ════════ CONTAINER ════════ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+/* ════════ LOGO ════════ */
+.logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(3rem, 8vh, 5rem);
+  color: var(--white);
+  text-shadow: 8px 8px 0 var(--black);
+  animation: bounce 1.2s infinite ease-in-out;
+}
+
+/* Animación tipo rebote */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* ════════ BAR ════════ */
+.bar-wrap {
+  width: 100%;
+  background: rgba(0,0,0,0.25);
+  border: var(--border);
+  border-radius: 99px;
+  height: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--yellow);
+  border-radius: 99px;
+  transition: width 0.3s linear;
+}
+
+/* ════════ STATUS TEXT ════════ */
+.status-text {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.2rem;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  text-shadow: 3px 3px 0 var(--black);
+  animation: fade 1s infinite alternate;
+}
+
+@keyframes fade {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+.logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      animation: floatLogo 3.5s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo {
+      0%,100% { transform: translateY(0px) rotate(-1.5deg); }
+      50%      { transform: translateY(-14px) rotate(1.5deg); }
+    }
+
+    .logo-badge {
+      background: var(--yellow);
+      border: var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 0.5rem 2.2rem 0.7rem;
+    }
+
+    .logo-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: 4.8rem;
+      line-height: 1;
+      color: var(--black);
+    }
+
+    .logo-text span { color: var(--purple); }
+
+    .logo-sub {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="loading-container">
+
+   <div class="logo-wrap">
+      <div class="logo-badge">
+        <div class="logo-text">RICO<span>QUIZ</span></div>
+      </div>
+      <p class="logo-sub">Play live with friends</p>
+    </div>
+
+  <div class="bar-wrap">
+    <div class="bar-fill" id="bar"></div>
+  </div>
+
+  <div class="status-text" id="status">Starting...</div>
+
+</div>
+
+<script>
+const bar = document.getElementById("bar");
+const status = document.getElementById("status");
+
+const steps = [
+  "Connecting...",
+  "Creating game roomm...",
+  "Generating questions...",
+  "Loading players...",
+  "Ready!"
+];
+
+let progress = 0;
+let stepIndex = 0;
+
+const interval = setInterval(() => {
+  progress += Math.random() * 15;
+  
+  if (progress >= 100) {
+    progress = 100;
+    bar.style.width = "100%";
+    status.textContent = "¡Entrando al juego!";
+    clearInterval(interval);
+
+    // Redirección simulada (puedes cambiar)
+    setTimeout(() => {
+      window.location = "pregunta.html";
+    }, 1000);
+
+    return;
+  }
+
+  bar.style.width = progress + "%";
+
+  // Cambiar texto conforme avanza
+  if (progress > (stepIndex + 1) * (100 / steps.length)) {
+    stepIndex++;
+    status.textContent = steps[stepIndex];
+  }
+
+}, 500);
+</script>
+
+</body>
+</html>
