@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizLive</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+    background: #f3efe6;
+}
+
+.container {
+  text-align: center;
+}
+
+.logo {
+  font-family: 'Anton', sans-serif;
+  font-size: 64px;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: #6a45ce;
+}
+
+.subtitle {
+  margin-top: 5px;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.cards {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.card {
+  max-width:  250px;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border: 4px solid #111;
+  
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card-top {
+  padding: 25px;
+  color: white;
+  text-align: left;
+  min-height: 120px;
+}
+
+.card-top h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.card-top p {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.card-bottom {
+  background: black;
+  padding: 15px;
+  text-align: right;
+}
+
+.arrow {
+  font-size: 24px;
+  color: white;
+  
+}
+
+/* COLORS */
+.create {
+  background: linear-gradient(135deg, #7b4bff, #6a45ce);
+}
+
+.join {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.tip {
+  margin-top: 30px;
+  border: 4px solid #333;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <h1 class="logo">RICO<span>QUIZ</span></h1>
+  <p class="subtitle">Juega en vivo con tus amigos</p>
+
+  <div class="cards">
+
+    <!-- CREAR SALA -->
+    <div class="card">
+      <div class="card-top create">
+        <h2>CREAR SALA</h2>
+        <p>Crea tu propia sala y comparte el código con tus amigos.</p>
+      </div>
+      <div class="card-bottom">
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+    <!-- UNIRSE -->
+    <div class="card">
+      <div class="card-top join">
+        <h2>UNIRSE A SALA</h2>
+        <p>Ingresa el código de la sala para unirte al juego.</p>
+      </div>
+      <div class="card-bottom">
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tip">
+    TIP: Puedes unirte desde ricoquiz.app con el código de 4 letras
+  </div>
+
+</div>
+
+</body>
+</html>

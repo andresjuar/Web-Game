@@ -1,0 +1,20 @@
+:root {
+  --purple: #6236FF;
+  --green: #4CAF50;
+  --yellow: #FFC107;
+  --blue: #2196F3;
+  --red: #F44336;
+  --bg-creme: #F5F5DC; /* Fondo estilo retro de la imagen */
+  --dark: #1A1A1A;
+}
+
+body {
+  font-family: 'Arial Black', sans-serif; /* O una fuente tipo Montserrat/Poppins */
+  background-color: var(--bg-creme);
+  color: var(--dark);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
