@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>WS Tester — RicoQuiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace; background: #1a1a2e; color: #eee; padding: 20px; }
+    h2 { color: #a78bfa; margin-bottom: 16px; }
+    .row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+    button {
+      background: #4c1d95; color: #fff; border: none;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-family: monospace;
+    }
+    button:hover { background: #6d28d9; }
+    button.danger { background: #7f1d1d; }
+    button.danger:hover { background: #991b1b; }
+    input, textarea {
+      background: #16213e; color: #eee; border: 1px solid #4c1d95;
+      padding: 8px; border-radius: 6px; font-family: monospace; font-size: 13px;
+    }
+    input { width: 160px; }
+    textarea { width: 100%; height: 80px; resize: vertical; }
+    #log {
+      background: #0f0f1a; border: 1px solid #2d2d4e;
+      border-radius: 8px; padding: 14px; height: 340px;
+      overflow-y: auto; font-size: 12px; line-height: 1.8;
+    }
+    .msg-out  { color: #60a5fa; }
+    .msg-in   { color: #34d399; }
+    .msg-err  { color: #f87171; }
+    .msg-info { color: #fbbf24; }
+    .section { margin-bottom: 20px; }
+    label { font-size: 12px; color: #a78bfa; display: block; margin-bottom: 4px; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 10px;
+      font-size: 11px; margin-left: 8px;
+    }
+    .connected    { background: #064e3b; color: #6ee7b7; }
+    .disconnected { background: #7f1d1d; color: #fca5a5; }
+  </style>
+</head>
+<body>
+
+<h2>RicoQuiz — WS Tester <span id="status-badge" class="badge disconnected">desconectado</span></h2>
+
+<!-- Connection -->
+<div class="section">
+  <div class="row">
+    <div>
+      <label>URL del servidor</label>
+      <input id="url" value="ws://localhost:3000">
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:8px">
+      <button onclick="connect()">Conectar</button>
+      <button class="danger" onclick="disconnect()">Desconectar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick actions -->
+<div class="section">
+  <label>Acciones rápidas</label>
+  <div class="row">
+    <button onclick="send('CREATE_ROOM', {})">CREATE_ROOM</button>
+    <button onclick="joinRoom()">JOIN_ROOM</button>
+    <button onclick="saveSettings()">SAVE_SETTINGS</button>
+    <button onclick="send('START_GAME', {})">START_GAME</button>
+    <button onclick="send('NEXT_QUESTION', {})">NEXT_QUESTION</button>
+    <button onclick="send('REVEAL_ANSWER', {})">REVEAL_ANSWER</button>
+    <button onclick="submitAnswer()">SUBMIT_ANSWER</button>
+  </div>
+</div>
+
+<!-- Inputs para los mensajes que necesitan datos -->
+<div class="section">
+  <div class="row">
+    <div>
+      <label>Código de sala</label>
+      <input id="room-code" placeholder="ABCD" maxlength="4" style="text-transform:uppercase;width:100px">
+    </div>
+    <div>
+      <label>Nombre jugador</label>
+      <input id="player-name" placeholder="Diego" value="Tester">
+    </div>
+    <div>
+      <label>Tipo de juego</label>
+      <select id="game-type" style="background:#16213e;color:#eee;border:1px solid #4c1d95;padding:8px;border-radius:6px;font-family:monospace">
+        <option value="ai_trivia">ai_trivia</option>
+        <option value="liar_game">liar_game</option>
+      </select>
+    </div>
+    <div>
+      <label>Tema (AI Trivia)</label>
+      <input id="topic" placeholder="Historia" value="Ciencia">
+    </div>
+    <div>
+      <label>Índice respuesta (0-3)</label>
+      <input id="answer-index" type="number" min="0" max="3" value="1" style="width:80px">
+    </div>
+  </div>
+</div>
+
+<!-- Manual message -->
+<div class="section">
+  <label>Mensaje manual (JSON)</label>
+  <textarea id="manual-msg">{"type": "CREATE_ROOM", "payload": {}}</textarea>
+  <div class="row" style="margin-top:8px">
+    <button onclick="sendManual()">Enviar manual</button>
+    <button onclick="clearLog()">Limpiar log</button>
+  </div>
+</div>
+
+<!-- Log -->
+<div id="log"></div>
+
+<script>
+  let socket = null;
+
+  function log(msg, cls = 'msg-info') {
+    const el = document.getElementById('log');
+    const time = new Date().toLocaleTimeString('es', { hour12: false });
+    el.innerHTML += `<div class="${cls}">[${time}] ${msg}</div>`;
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function setStatus(connected) {
+    const badge = document.getElementById('status-badge');
+    badge.textContent = connected ? 'conectado' : 'desconectado';
+    badge.className = 'badge ' + (connected ? 'connected' : 'disconnected');
+  }
+
+  function connect() {
+    if (socket) socket.close();
+    const url = document.getElementById('url').value;
+    socket = new WebSocket(url);
+
+    socket.onopen = () => {
+      log(`Conectado a ${url}`, 'msg-info');
+      setStatus(true);
+    };
+    socket.onmessage = ({ data }) => {
+      const parsed = JSON.parse(data);
+      // Auto-fill room code if we just created one
+      if (parsed.type === 'ROOM_CREATED') {
+        document.getElementById('room-code').value = parsed.payload.code;
+      }
+      log(`← ${parsed.type}  ${JSON.stringify(parsed.payload)}`, 'msg-in');
+    };
+    socket.onclose = () => {
+      log('Conexión cerrada', 'msg-err');
+      setStatus(false);
+    };
+    socket.onerror = () => log('Error de conexión', 'msg-err');
+  }
+
+  function disconnect() {
+    socket?.close();
+  }
+
+  function send(type, payload) {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      log('No conectado', 'msg-err'); return;
+    }
+    const msg = JSON.stringify({ type, payload });
+    log(`→ ${type}  ${JSON.stringify(payload)}`, 'msg-out');
+    socket.send(msg);
+  }
+
+  function joinRoom() {
+    send('JOIN_ROOM', {
+      code: document.getElementById('room-code').value.toUpperCase(),
+      name: document.getElementById('player-name').value,
+      victoryQuote: 'Victory is mine!',
+    });
+  }
+
+  function saveSettings() {
+    send('SAVE_SETTINGS', {
+      gameType: document.getElementById('game-type').value,
+      topic: document.getElementById('topic').value,
+      numQuestions: 3,
+    });
+  }
+
+  function submitAnswer() {
+    send('SUBMIT_ANSWER', {
+      answerIndex: Number(document.getElementById('answer-index').value),
+    });
+  }
+
+  function sendManual() {
+    try {
+      const { type, payload } = JSON.parse(document.getElementById('manual-msg').value);
+      send(type, payload);
+    } catch {
+      log('JSON inválido', 'msg-err');
+    }
+  }
+
+  function clearLog() {
+    document.getElementById('log').innerHTML = '';
+  }
+
+  // Connect on load
+  connect();
+</script>
+</body>
+</html>

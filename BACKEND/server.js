@@ -19,6 +19,10 @@ app.get("/api/rooms/:code/exists", (req, res) => {
   const room = rooms[req.params.code.toUpperCase()];
   res.json({ exists: !!room, inProgress: room?.state !== "lobby" });
 });
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../FRONTEND/views/index.html"));
+});
  
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 wss.on("connection", handleConnection);
