@@ -22,8 +22,8 @@ const {
   sendToPlayer,
 } = require("./roomManager");
 
-const aiTrivia = require("./aiTrivia");
-const liarGame = require("./liarGame");
+const aiTrivia = require("../game/aiTrivia");
+const liarGame = require("../game/liarGame");
 
 // Socket identity helpers
 
@@ -208,8 +208,7 @@ function handleNextQuestion(socket) {
   const { room } = ctx;
 
   if (room.gameType === "ai_trivia") {
-    room._questionStartedAt = Date.now();
-    aiTrivia.nextQuestion(room);
+    aiTrivia.nextQuestion(room); // _questionStartedAt now set inside nextQuestion()
   } else if (room.gameType === "liar_game") {
     liarGame.nextRound(room);
   }

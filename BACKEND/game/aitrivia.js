@@ -17,7 +17,7 @@ const {
   getPlayerList,
   calculatePoints,
   QUESTION_TIME,
-} = require("./roomManager");
+} = require("../ws/roomManager");
 
 const { generateTriviaQuestions } = require("../services/aiService");
 
@@ -65,12 +65,13 @@ function nextQuestion(room) {
 
   const q = room.questions[room.currentQuestion];
   room.state = "question";
+  room._questionStartedAt = Date.now(); // ← moved here from wsHandler
 
   // Reset per-round answer tracking
   Object.values(room.players).forEach((p) => {
     p.lastAnswerCorrect = false;
     p.lastPoints = 0;
-    p._answeredAt = null; // timestamp when they answered
+    p._answeredAt = null;
   });
 
   const payload = {
@@ -200,10 +201,8 @@ function endGame(room) {
   });
 }
 
-// ─── Helper ──────────────────────────────────────────────────────────────────
+// Helper
 
-// Approximate seconds left by checking how many players have answered
-// relative to when the question started. Simpler: track startTime on the room.
 function getCurrentSecondsLeft(room) {
   if (!room._questionStartedAt) return QUESTION_TIME;
   const elapsed = Math.floor((Date.now() - room._questionStartedAt) / 1000);
