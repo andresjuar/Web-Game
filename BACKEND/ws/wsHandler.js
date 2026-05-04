@@ -22,13 +22,8 @@ const {
   sendToPlayer,
 } = require("./roomManager");
 
-<<<<<<< Updated upstream
 const aiTrivia = require("../game/aiTrivia");
-const liarGame = require("../game/liarGame");
-=======
-const aiTrivia = require("./aiTrivia");
 //const liarGame = require("./liarGame");
->>>>>>> Stashed changes
 
 // Socket identity helpers
 

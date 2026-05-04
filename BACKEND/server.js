@@ -11,7 +11,7 @@ const wss = new WebSocketServer({ server });
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../FRONTEND")));
+app.use(express.static(path.join(__dirname, "../FRONTEND/views")));
 
 // ── REST routes ───────────────────────────────────────────────────────────────
 app.get("/api/rooms/:code/exists", (req, res) => {
@@ -20,10 +20,7 @@ app.get("/api/rooms/:code/exists", (req, res) => {
   res.json({ exists: !!room, inProgress: room?.state !== "lobby" });
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../FRONTEND/views/index.html"));
-});
- 
+
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 wss.on("connection", handleConnection);
 
@@ -32,3 +29,9 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`RicoQuiz running on http://localhost:${PORT}`);
 });
+
+console.log("Sirviendo static desde:", path.join(__dirname, "../FRONTEND/views"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../FRONTEND/views/index.html"));
+});
+ 

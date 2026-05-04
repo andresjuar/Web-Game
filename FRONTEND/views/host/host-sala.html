@@ -333,9 +333,7 @@
                 <button class="btn-config" onclick="openModal()">
                     ⚙ SETTINGS
                 </button>
-                <button class="btn-start" onclick="window.location='loading.html'">
-                    START GAME ➔
-                </button>
+               <button class="btn-start">START GAME ➔</button>
             </div>
         </div>
 
@@ -362,7 +360,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div id="topic-section">
                     <p class="modal-section">TOPIC (FOR AI)</p>
                     <input class="modal-input" type="text" placeholder="e.g. History, Sports..." />
                 </div>
@@ -376,7 +374,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
-                    <button class="btn-save" onclick="closeModal()">SAVE</button>
+                  <button class="btn-save" onclick="saveSettings()">SAVE</button>
                 </div>
             </div>
         </div>
@@ -395,4 +393,6 @@
             }
         </script>
     </body>
+    <script src="/js/wsClient.js"></script>
+<script src="/js/host-room.js"></script>
 </html>
