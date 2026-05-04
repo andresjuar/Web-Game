@@ -1,4 +1,9 @@
 // Carga las variables de entorno del archivo .env
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
+console.log("¿Llave detectada?:", process.env.GEMINI_API_KEY ? "SÍ" : "NO");
+
 require('dotenv').config();
 
 const aiService = require('./aiService');
