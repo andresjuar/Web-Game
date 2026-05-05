@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>RicoQuiz – Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #EAE0C8;
+      --black:  #111111;
+      --purple: #6C35A6;
+      --green:  #389854;
+      --yellow: #F5C400;
+      --white:  #FFFFFF;
+      --opt-a:  #C4281A;
+      --opt-b:  #389854;
+      --opt-c:  #1A5FA0;
+      --opt-d:  #D4820A;
+      --border: 4px solid var(--black);
+      --shadow: 6px 6px 0px var(--black);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--black);
+      height: 100vh; height: 100dvh;
+      display: flex; justify-content: center;
+      overflow: hidden;
+    }
+
+    .mobile-container {
+      width: 100%; max-width: 480px; height: 100%;
+      background-color: var(--cream);
+      display: flex; flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* ── Header compartido ── */
+    .header {
+      background-color: var(--purple);
+      padding: clamp(0.8rem,2vh,1.5rem) 1rem;
+      border-bottom: var(--border);
+      display: flex; justify-content: center; align-items: center;
+      flex-shrink: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+    }
+
+    .logo-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.6rem,4vh,2.5rem);
+      color: var(--black); text-transform: uppercase; letter-spacing: -1px;
+      background: var(--yellow);
+      padding: 0.4rem 1.2rem;
+      border: 3px solid var(--black); border-radius: 12px;
+      box-shadow: 3px 3px 0 var(--black);
+      transform: rotate(-2deg);
+    }
+    .logo-text span { color: var(--purple); }
+
+    /* ── Screens ── */
+    .screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    .screen.active { display: flex; }
+
+    /* ════════ SCREEN: SETUP ════════ */
+    #screen-setup .content {
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column;
+      flex: 1; gap: 2rem; overflow-y: auto; justify-content: center;
+    }
+
+    .avatar-wrapper { display: flex; justify-content: center; }
+    .avatar-selector {
+      width: 120px; height: 120px;
+      background: var(--white); border: var(--border); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; cursor: pointer; box-shadow: var(--shadow);
+      position: relative; transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .avatar-selector:hover  { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 var(--black); }
+    .avatar-selector:active { transform: translate(2px,2px);   box-shadow: 2px 2px 0 var(--black); }
+    .edit-badge {
+      position: absolute; bottom: -10px; right: -10px;
+      background: var(--yellow); border: 3px solid var(--black);
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; box-shadow: 3px 3px 0 var(--black);
+    }
+
+    /* Avatar picker modal */
+    .avatar-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .avatar-modal-overlay.open { display: flex; }
+    .avatar-modal {
+      background: var(--cream); border: var(--border); border-radius: 16px;
+      padding: 1.5rem; box-shadow: 8px 8px 0 var(--black);
+      width: 90%; max-width: 380px;
+    }
+    .avatar-modal-title { font-family: 'Fredoka One', cursive; font-size: 1.3rem; text-transform: uppercase; margin-bottom: 1rem; text-align: center; }
+    .avatar-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.6rem; }
+    .avatar-option {
+      font-size: 2rem; text-align: center; padding: 0.4rem;
+      border: 3px solid transparent; border-radius: 8px; cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .avatar-option:hover { border-color: var(--purple); transform: scale(1.1); }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--black); text-transform: uppercase; }
+    .form-group input {
+      width: 100%; padding: 1.1rem 1rem;
+      font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800;
+      color: var(--black); background: var(--white);
+      border: var(--border); outline: none;
+      box-shadow: 4px 4px 0 var(--black); transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .form-group input:focus { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--purple); border-color: var(--purple); }
+    .form-group input::placeholder { color: rgba(17,17,17,0.4); }
+
+    .footer { padding: 1.5rem; flex-shrink: 0; }
+    .btn-ready {
+      width: 100%; padding: 1.2rem;
+      background: var(--green); border: var(--border); color: var(--white);
+      font-family: 'Fredoka One', cursive; font-size: 1.5rem; text-transform: uppercase;
+      cursor: pointer; box-shadow: var(--shadow);
+      display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn-ready:hover  { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 var(--black); }
+    .btn-ready:active { transform: translate(2px,2px);   box-shadow: 2px 2px 0 var(--black); }
+
+    /* ════════ SCREEN: WAIT ════════ */
+    #screen-wait .content {
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; gap: 2rem; text-align: center;
+    }
+
+    .waiting-card {
+      width: 100%; background: var(--white);
+      border: var(--border); border-radius: 16px;
+      padding: 3rem 1.5rem; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    }
+    .waiting-title { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--black); text-transform: uppercase; line-height: 1.2; }
+    .sub-text { font-weight: 800; color: var(--purple); font-size: 1.1rem; opacity: 0.8; }
+    .dots-container { display: flex; gap: 8px; margin-top: 0.5rem; }
+    .dot { width: 18px; height: 18px; background: var(--purple); border: 2px solid var(--black); border-radius: 50%; animation: pulse 1.4s infinite ease-in-out both; }
+    .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes pulse { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    .footer-note { background: var(--yellow); border: var(--border); padding: 0.8rem 1.5rem; border-radius: 5px; font-family: 'Fredoka One', cursive; font-size: 1rem; box-shadow: 4px 4px 0 var(--black); }
+
+    /* ════════ SCREEN: ANSWER ════════ */
+    #screen-answer .content {
+      padding: clamp(1rem,3vh,1.5rem);
+      display: flex; flex-direction: column;
+      flex: 1; gap: clamp(0.8rem,2vh,1.2rem); overflow: hidden;
+    }
+
+    .top-bar { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .progress-badge { background: var(--black); color: var(--white); font-family: 'Fredoka One', cursive; font-size: clamp(0.8rem,2vh,0.9rem); padding: 0.3rem 0.8rem; border-radius: 99px; text-transform: uppercase; }
+    .timer-badge { background: var(--yellow); border: 3px solid var(--black); border-radius: 12px; padding: 0.1rem 0.6rem; box-shadow: 2px 2px 0 var(--black); font-family: 'Fredoka One', cursive; font-size: clamp(1.2rem,3vh,1.5rem); color: var(--black); }
+
+    .question-text { font-family: 'Fredoka One', cursive; font-size: clamp(1.2rem,3.5vh,1.5rem); color: var(--black); text-align: center; line-height: 1.2; flex-shrink: 0; }
+
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: clamp(0.5rem,1.5vh,0.8rem); flex-grow: 1; max-height: 45vh; min-height: 150px; }
+    .option-btn { display: flex; flex-direction: column; border: var(--border); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); cursor: pointer; transition: transform 0.1s, box-shadow 0.1s, filter 0.2s, opacity 0.2s; overflow: hidden; outline: none; min-height: 0; }
+    .option-btn:active:not(.disabled) { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--black); }
+    .opt-letter { background: var(--black); color: var(--white); font-family: 'Fredoka One', cursive; font-size: clamp(1.2rem,3vh,1.5rem); padding: clamp(0.3rem,1vh,0.5rem); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .opt-text { flex: 1; font-family: 'Nunito', sans-serif; font-size: clamp(0.95rem,2.5vh,1.1rem); font-weight: 900; color: var(--white); display: flex; align-items: center; justify-content: center; padding: clamp(0.4rem,1.5vh,0.8rem); text-align: center; line-height: 1.1; overflow: hidden; }
+    .btn-a .opt-text { background: var(--opt-a); } .btn-b .opt-text { background: var(--opt-b); }
+    .btn-c .opt-text { background: var(--opt-c); } .btn-d .opt-text { background: var(--opt-d); }
+    .option-btn.disabled { pointer-events: none; }
+    .option-btn.dimmed { opacity: 0.4; filter: grayscale(80%); box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
+    .option-btn.selected { box-shadow: 0 0 0 4px var(--yellow), 4px 4px 0 var(--black); transform: translate(-2px,-2px); }
+    .option-btn.correct-reveal { box-shadow: 0 0 0 4px #22c55e, 4px 4px 0 var(--black); }
+    .option-btn.wrong-reveal   { opacity: 0.35; filter: grayscale(80%); }
+
+    .waiting-message { visibility: hidden; opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; margin-top: auto; padding-bottom: clamp(0.5rem,2vh,1rem); transition: opacity 0.3s ease; flex-shrink: 0; }
+    .waiting-message.visible { visibility: visible; opacity: 1; }
+    .waiting-text { font-family: 'Fredoka One', cursive; font-size: clamp(1.1rem,2.5vh,1.3rem); color: var(--black); text-transform: uppercase; text-align: center; }
+    .loader { display: flex; gap: 5px; }
+    .loader div { width: clamp(8px,2vh,10px); height: clamp(8px,2vh,10px); background: var(--purple); border-radius: 50%; animation: loaderBounce 0.5s alternate infinite ease; }
+    .loader div:nth-child(2) { animation-delay: 0.15s; } .loader div:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes loaderBounce { 0% { transform: translateY(0); } 100% { transform: translateY(-8px); } }
+
+    /* ════════ SCREEN: RESULTS ════════ */
+    #screen-results .content {
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; gap: 2rem; text-align: center;
+    }
+
+    .rank-card { width: 100%; background: var(--white); border: var(--border); border-radius: 16px; padding: 2rem 1rem; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .rank-label { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: var(--purple); text-transform: uppercase; letter-spacing: 1px; }
+    .rank-number { font-family: 'Fredoka One', cursive; font-size: 5rem; color: var(--black); line-height: 1; }
+    .rank-suffix { font-size: 2rem; vertical-align: super; }
+
+    .score-card { width: 100%; background: var(--purple); border: var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; color: var(--white); }
+    .score-label { font-family: 'Fredoka One', cursive; font-size: 1.4rem; text-transform: uppercase; }
+    .score-value { font-family: 'Fredoka One', cursive; font-size: 2.5rem; color: var(--yellow); }
+    .score-delta { font-size: 0.9rem; font-weight: 900; color: #86efac; display: block; }
+
+    .footer-msg { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .footer-msg .waiting-text { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--black); text-transform: uppercase; }
+
+    /* ════════ SCREEN: WINNER ════════ */
+    #screen-winner .content {
+      padding: 2rem 1.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; gap: 1.5rem; text-align: center;
+    }
+
+    .winner-emoji { font-size: 4rem; animation: pop 0.5s ease; }
+    @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .winner-headline { font-family: 'Fredoka One', cursive; font-size: clamp(1.5rem,5vh,2rem); color: var(--black); text-transform: uppercase; line-height: 1.1; }
+    .winner-headline span { color: var(--purple); }
+    .final-rank-card { width: 100%; background: var(--yellow); border: var(--border); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .final-rank-label { font-family: 'Fredoka One', cursive; font-size: 1rem; text-transform: uppercase; color: var(--black); opacity: 0.7; }
+    .final-rank-number { font-family: 'Fredoka One', cursive; font-size: 3.5rem; color: var(--black); line-height: 1; }
+    .final-score { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--black); }
+    .victory-quote { font-size: 1rem; font-weight: 800; color: var(--black); font-style: italic; opacity: 0.8; padding: 0 1rem; }
+    .btn-home { width: 100%; padding: 1rem; background: var(--purple); border: var(--border); color: var(--white); font-family: 'Fredoka One', cursive; font-size: 1.3rem; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s; border-radius: var(--radius); }
+    .btn-home:hover { transform: translate(-2px,-2px); }
+  </style>
+</head>
+<body>
+<div class="mobile-container">
+
+  <!-- Header compartido -->
+  <div class="header">
+    <div class="logo-text">RICO<span>QUIZ</span></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 1: SETUP
+  ══════════════════════════════════════ -->
+  <div class="screen active" id="screen-setup">
+    <div class="content">
+      <div class="avatar-wrapper">
+        <div class="avatar-selector" id="avatar-display" onclick="openAvatarModal()">
+          👤
+          <div class="edit-badge">✏️</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="playerName">Your name</label>
+        <input type="text" id="playerName" placeholder="e.g. Diego" maxlength="20"/>
+      </div>
+      <div class="form-group">
+        <label for="victoryQuote">Victory Quote</label>
+        <input type="text" id="victoryQuote" placeholder="e.g. Victory is mine and so is the pizza!"/>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn-ready" id="btn-ready">I'M READY! ✓</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 2: WAITING FOR HOST
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-wait">
+    <div class="content">
+      <div class="waiting-card">
+        <h1 class="waiting-title">Waiting for host</h1>
+        <div class="dots-container">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <p class="sub-text">The game will start soon!</p>
+      </div>
+      <div class="footer-note">GET READY! 🚀</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 3: ANSWER QUESTION
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-answer">
+    <div class="content">
+      <div class="top-bar">
+        <div class="progress-badge" id="progress-badge">1 of 8</div>
+        <div class="timer-badge" id="timer-badge">0:15</div>
+      </div>
+      <div class="question-text" id="player-question-text">Loading...</div>
+      <div class="options-grid" id="player-options-grid">
+        <button class="option-btn btn-a" onclick="selectAnswer(0)">
+          <div class="opt-letter">A</div><div class="opt-text" id="opt-text-0"></div>
+        </button>
+        <button class="option-btn btn-b" onclick="selectAnswer(1)">
+          <div class="opt-letter">B</div><div class="opt-text" id="opt-text-1"></div>
+        </button>
+        <button class="option-btn btn-c" onclick="selectAnswer(2)">
+          <div class="opt-letter">C</div><div class="opt-text" id="opt-text-2"></div>
+        </button>
+        <button class="option-btn btn-d" onclick="selectAnswer(3)">
+          <div class="opt-letter">D</div><div class="opt-text" id="opt-text-3"></div>
+        </button>
+      </div>
+      <div class="waiting-message" id="waitingMessage">
+        <div class="waiting-text">Wait for the others...</div>
+        <div class="loader"><div></div><div></div><div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 4: RESULTS / LEADERBOARD
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-results">
+    <div class="content">
+      <div class="rank-card">
+        <span class="rank-label">Your current place</span>
+        <div class="rank-number" id="rank-number">-<span class="rank-suffix">º</span></div>
+        <span class="rank-label" style="color:var(--black);opacity:0.6">PLACE</span>
+      </div>
+      <div class="score-card">
+        <span class="score-label">Points</span>
+        <div>
+          <span class="score-value" id="score-value">0</span>
+          <span class="score-delta" id="score-delta"></span>
+        </div>
+      </div>
+      <div class="footer-msg">
+        <p class="waiting-text">Waiting for the next round</p>
+        <div class="loader"><div></div><div></div><div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 5: GAME OVER / WINNER
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-winner">
+    <div class="content">
+      <div class="winner-emoji" id="winner-emoji">🏆</div>
+      <div class="winner-headline" id="winner-headline">
+        <span id="winner-name-display">Player</span> is the winner!
+      </div>
+      <div class="final-rank-card">
+        <div class="final-rank-label">Your final place</div>
+        <div class="final-rank-number" id="final-rank">-</div>
+        <div class="final-score" id="final-score">0 pts</div>
+      </div>
+      <div class="victory-quote" id="victory-quote-display"></div>
+      <button class="btn-home" onclick="goHome()">🏠 Back to Home</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Avatar picker modal -->
+<div class="avatar-modal-overlay" id="avatarModal">
+  <div class="avatar-modal">
+    <div class="avatar-modal-title">Pick your avatar</div>
+    <div class="avatar-grid" id="avatar-grid"></div>
+  </div>
+</div>
+
+<script src="/js/wsClient.js"></script>
+<script>
+  // ── Estado local ────────────────────────────────────────────────────────────
+  let selectedAvatar = '👤';
+  let selectedAnswerIndex = -1;
+  let currentTimeLimit = 15;
+
+  const AVATARS = ['🐙','🦊','🐸','🦁','🐼','🦄','🐯','🐧','🦋','🐻','🐨','🦅','🐬','🦊','🐺','🦁','🐮','🐷','🐸','🐵'];
+
+  // ── Navegación ──────────────────────────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ── Avatar modal ────────────────────────────────────────────────────────────
+  function openAvatarModal() {
+    const grid = document.getElementById('avatar-grid');
+    grid.innerHTML = AVATARS.map(a => `
+      <div class="avatar-option" onclick="pickAvatar('${a}')">${a}</div>
+    `).join('');
+    document.getElementById('avatarModal').classList.add('open');
+  }
+
+  function pickAvatar(emoji) {
+    selectedAvatar = emoji;
+    document.getElementById('avatar-display').childNodes[0].textContent = emoji;
+    document.getElementById('avatarModal').classList.remove('open');
+  }
+
+  // Cerrar modal al tocar afuera
+  document.getElementById('avatarModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('avatarModal')) {
+      document.getElementById('avatarModal').classList.remove('open');
+    }
+  });
+
+  // ── Setup: JOIN_ROOM ────────────────────────────────────────────────────────
+  document.getElementById('btn-ready').addEventListener('click', () => {
+    const name = document.getElementById('playerName').value.trim();
+    const victoryQuote = document.getElementById('victoryQuote').value.trim();
+    const code = sessionStorage.getItem('roomCode');
+
+    if (!name) { alert('Please enter your name.'); return; }
+    if (!code)  { alert('No room code found. Go back and enter the code.'); return; }
+
+    ws.send('JOIN_ROOM', { code, name, victoryQuote });
+  });
+
+  ws.on('JOINED_OK', ({ code, name }) => {
+    sessionStorage.setItem('playerName', name);
+    sessionStorage.setItem('role', 'player');
+    showScreen('screen-wait');
+  });
+
+  ws.on('JOIN_ERROR', ({ message }) => alert(message));
+
+  // ── Waiting: escuchar eventos del host ──────────────────────────────────────
+  ws.on('LOADING', () => {
+    // El host arrancó el juego, seguimos esperando en wait
+    showScreen('screen-wait');
+  });
+
+  // ── Answer: mostrar pregunta ────────────────────────────────────────────────
+  ws.on('QUESTION', ({ questionIndex, totalQuestions, question, options, timeLimit }) => {
+    currentTimeLimit = timeLimit || 15;
+    selectedAnswerIndex = -1;
+
+    document.getElementById('progress-badge').textContent = `${questionIndex + 1} of ${totalQuestions}`;
+    document.getElementById('timer-badge').textContent = `0:${String(currentTimeLimit).padStart(2,'0')}`;
+    document.getElementById('player-question-text').textContent = question;
+
+    // Render opciones
+    options.forEach((opt, i) => {
+      document.getElementById(`opt-text-${i}`).textContent = opt;
+    });
+
+    // Reset estado visual
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.classList.remove('disabled','dimmed','selected','correct-reveal','wrong-reveal');
+    });
+    document.getElementById('waitingMessage').classList.remove('visible');
+
+    showScreen('screen-answer');
+  });
+
+  // Actualizar timer
+  ws.on('TIMER_TICK', ({ secondsLeft }) => {
+    const pad = String(secondsLeft).padStart(2,'0');
+    document.getElementById('timer-badge').textContent = `0:${pad}`;
+    // Poner rojo si quedan menos de 5s
+    document.getElementById('timer-badge').style.background = secondsLeft <= 5 ? '#ff4444' : 'var(--yellow)';
+    document.getElementById('timer-badge').style.color = secondsLeft <= 5 ? 'var(--white)' : 'var(--black)';
+  });
+
+  // ── Answer: enviar respuesta ────────────────────────────────────────────────
+  function selectAnswer(index) {
+    if (selectedAnswerIndex !== -1) return; // ya respondió
+    selectedAnswerIndex = index;
+
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach((btn, i) => {
+      btn.classList.add('disabled');
+      if (i === index) btn.classList.add('selected');
+      else btn.classList.add('dimmed');
+    });
+
+    document.getElementById('waitingMessage').classList.add('visible');
+    ws.send('SUBMIT_ANSWER', { answerIndex: index });
+  }
+
+  // ── Reveal: mostrar respuesta correcta ─────────────────────────────────────
+  ws.on('ANSWER_REVEALED', ({ correct }) => {
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach((btn, i) => {
+      btn.classList.remove('selected','dimmed');
+      if (i === correct) btn.classList.add('correct-reveal');
+      else btn.classList.add('wrong-reveal');
+    });
+    document.getElementById('waitingMessage').classList.remove('visible');
+  });
+
+  // ── Results: mostrar ranking personal ──────────────────────────────────────
+  ws.on('YOUR_SCORE', ({ rank, score, lastPoints }) => {
+    document.getElementById('rank-number').innerHTML = `${rank}<span class="rank-suffix">º</span>`;
+    document.getElementById('score-value').textContent = score;
+    document.getElementById('score-delta').textContent = lastPoints > 0 ? `+${lastPoints} this round` : '';
+    showScreen('screen-results');
+  });
+
+  // ── Game Over ───────────────────────────────────────────────────────────────
+  ws.on('GAME_OVER', ({ winner, leaderboard }) => {
+    const myName = sessionStorage.getItem('playerName');
+    const myEntry = leaderboard.find(p => p.name === myName);
+    const myRank  = leaderboard.indexOf(myEntry) + 1;
+    const isWinner = myName === winner.name;
+
+    document.getElementById('winner-emoji').textContent = isWinner ? '🏆' : myRank <= 3 ? '🥈' : '🎮';
+    document.getElementById('winner-name-display').textContent = winner.name;
+    document.getElementById('winner-headline').innerHTML = isWinner
+      ? `<span>${winner.name}</span> is the winner!`
+      : `<span>${winner.name}</span> won the game!`;
+
+    document.getElementById('final-rank').textContent = `${myRank}º`;
+    document.getElementById('final-score').textContent = `${myEntry?.score || 0} pts`;
+
+    // Mostrar victory quote si ganó
+    if (isWinner && winner.victoryQuote) {
+      document.getElementById('victory-quote-display').textContent = `"${winner.victoryQuote}"`;
+    }
+
+    showScreen('screen-winner');
+  });
+
+  // ── Errores y desconexión ───────────────────────────────────────────────────
+  ws.on('ERROR', ({ message }) => alert(message));
+
+  ws.on('HOST_DISCONNECTED', () => {
+    alert('The host has left the game.');
+    goHome();
+  });
+
+  // ── Volver al inicio ────────────────────────────────────────────────────────
+  function goHome() {
+    sessionStorage.clear();
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>
