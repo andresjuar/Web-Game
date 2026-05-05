@@ -9,7 +9,7 @@
  */
 
 const ws = (() => {
-  const url = `ws://${location.host}`;
+  const url = `wss://${location.host}`;
   let socket = null;
   const handlers = {}; // type -> [callbacks]
 

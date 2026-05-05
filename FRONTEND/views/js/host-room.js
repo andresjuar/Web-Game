@@ -82,10 +82,69 @@ function saveSettings() {
 document.querySelector('.btn-start').addEventListener('click', () => {
   ws.send('START_GAME');
 });
+let body = document.getElementById("in-game-body");
 
 ws.on('LOADING', () => {
-  window.location.href = '/host/loading.html';
+  body.classList.add(".body-in-game");
+   body.innerHTML = `
+    <div class="loading-container">
+
+   <div class="logo-wrap">
+      <div class="logo-badge">
+        <div class="logo-text">RICO<span>QUIZ</span></div>
+      </div>
+      <p class="logo-sub">Play live with friends</p>
+    </div>
+
+  <div class="bar-wrap">
+    <div class="bar-fill" id="bar"></div>
+  </div>
+
+  <div class="status-text" id="status">Starting...</div>
+
+</div>
+
+<script>
+const bar = document.getElementById("bar");
+const status = document.getElementById("status");
+
+const steps = [
+  "Connecting...",
+  "Creating game roomm...",
+  "Generating questions...",
+  "Loading players...",
+  "Ready!"
+];
+
+let progress = 0;
+let stepIndex = 0;
+
+const interval = setInterval(() => {
+  progress += Math.random() * 15;
+  
+  if (progress >= 100) {
+    progress = 100;
+    bar.style.width = "100%";
+    status.textContent = "¡Entering the game!";
+    clearInterval(interval);
+
+    return;
+  }
+
+  bar.style.width = progress + "%";
+
+  if (progress > (stepIndex + 1) * (100 / steps.length)) {
+    stepIndex++;
+    status.textContent = steps[stepIndex];
+  }
+
+}, 500);
+</script>
+
+    `;
 });
+
+
 
 ws.on('ERROR', ({ message }) => {
   alert(message);

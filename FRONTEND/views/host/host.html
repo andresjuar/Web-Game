@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RicoQuiz – Host</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:  #EAE0C8;
+      --black:  #111111;
+      --purple: #6C35A6;
+      --green:  #389854;
+      --yellow: #F5C400;
+      --white:  #FFFFFF;
+      --border: 4px solid var(--black);
+      --shadow: 6px 6px 0px var(--black);
+      --radius: 4px;
+    }
+
+    body { font-family: 'Nunito', sans-serif; height: 100vh; overflow: hidden; }
+
+    /* ── Cada screen ocupa todo el viewport, oculta por defecto ── */
+    .screen { display: none; height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+    .screen.centered {
+      align-items: center; justify-content: center;
+      background-color: var(--purple);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+    }
+
+    /* ════════ LOBBY ════════ */
+    .top-half {
+      background-color: var(--purple);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+      color: var(--white);
+      padding: clamp(1rem,3vh,3rem) clamp(2rem,5vw,4rem);
+      display: flex; justify-content: space-between; align-items: center;
+      height: 50vh; border-bottom: var(--border);
+    }
+    .code-section { display: flex; flex-direction: column; gap: clamp(0.2rem,1vh,0.5rem); }
+    .code-label { font-family: 'Nunito',sans-serif; font-size: clamp(1rem,2.5vh,1.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+    .code-display { font-family: 'Fredoka One',cursive; font-size: clamp(4rem,16vh,9rem); line-height: 0.8; letter-spacing: 5px; text-shadow: 8px 8px 0px var(--black); }
+    .join-section { display: flex; flex-direction: column; align-items: flex-end; gap: clamp(0.5rem,1.5vh,1rem); }
+    .join-label { font-size: clamp(0.9rem,2vh,1.1rem); font-weight: 800; }
+    .link-box { background: var(--black); padding: clamp(0.3rem,1vh,0.5rem); display: flex; align-items: center; gap: clamp(0.5rem,1vw,1rem); border: 2px solid var(--black); }
+    .link-box span { font-family: 'Nunito',sans-serif; font-weight: 800; font-size: clamp(0.9rem,2vh,1.2rem); color: var(--white); padding-left: 0.5rem; }
+    .btn-copy-icon { border: 2px solid var(--black); font-size: clamp(1rem,2vh,1.2rem); padding: 0.3rem; cursor: pointer; }
+    .qr-placeholder { width: clamp(80px,15vh,120px); height: clamp(80px,15vh,120px); background: var(--white); border: var(--border); box-shadow: var(--shadow); padding: 5px; }
+    .qr-pattern { width: 100%; height: 100%; background: linear-gradient(45deg,#111 25%,transparent 25%,transparent 75%,#111 75%,#111), linear-gradient(45deg,#111 25%,transparent 25%,transparent 75%,#111 75%,#111); background-size: 20px 20px; background-position: 0 0,10px 10px; border: 2px solid #111; }
+
+    .bottom-half { background-color: var(--cream); padding: clamp(1.5rem,4vh,3rem) clamp(2rem,5vw,4rem); display: flex; flex-direction: column; justify-content: space-between; height: 50vh; }
+    .players-title { font-family: 'Fredoka One',cursive; font-size: clamp(1.2rem,3vh,1.8rem); color: var(--black); text-transform: uppercase; margin-bottom: clamp(1rem,2.5vh,2rem); }
+    .players-grid { display: flex; gap: clamp(1.5rem,5vw,4rem); align-items: center; justify-content: center; flex-wrap: wrap; height: 140px; overflow: hidden; }
+    .player-chip { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+    .player-avatar { width: clamp(60px,10vh,85px); height: clamp(60px,10vh,85px); display: flex; align-items: center; justify-content: center; font-size: clamp(2rem,4vh,3rem); background: var(--white); border: 4px solid var(--black); border-radius: 50%; box-shadow: 6px 6px 0 var(--black); }
+    .player-name { font-family: 'Fredoka One',cursive; font-size: clamp(0.9rem,2vh,1.2rem); color: var(--black); text-transform: uppercase; }
+    .bg-blue { background-color: #4A90E2; } .bg-yellow { background-color: #F5C400; } .bg-red { background-color: #D0021B; } .bg-green { background-color: #7ED321; } .bg-pink { background-color: #E91E8C; } .bg-orange { background-color: #F5A623; }
+
+    .waiting-card { width: 100%; max-width: 500px; background: var(--white); border: var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .waiting-title { font-family: 'Fredoka One',cursive; font-size: 1.8rem; color: var(--black); text-transform: uppercase; }
+    .dots-container { display: flex; gap: 8px; }
+    .dot { width: 14px; height: 14px; background: var(--purple); border: 2px solid var(--black); border-radius: 50%; animation: pulse 1.4s infinite ease-in-out both; }
+    .dot:nth-child(1) { animation-delay: -0.32s; } .dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes pulse { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    .bottom-controls { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding-top: 1rem; }
+    .btn-config { background: var(--cream); border: var(--border); padding: clamp(0.6rem,1.5vh,1rem) clamp(1rem,2vw,1.5rem); font-family: 'Fredoka One',cursive; font-size: clamp(0.9rem,2vh,1.2rem); color: var(--black); cursor: pointer; box-shadow: 4px 4px 0 var(--black); display: flex; align-items: center; gap: 0.5rem; }
+    .btn-config:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--black); }
+    .btn-start { background: var(--white); border: var(--border); padding: clamp(0.8rem,2vh,1.2rem) clamp(1.5rem,3vw,2.5rem); font-family: 'Fredoka One',cursive; font-size: clamp(1rem,2.5vh,1.5rem); color: var(--black); cursor: pointer; box-shadow: 6px 6px 0 var(--black); display: flex; align-items: center; gap: 0.5rem; transition: transform 0.1s, box-shadow 0.1s; }
+    .btn-start:hover { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 var(--black); }
+    .btn-start:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--black); }
+
+    /* ════════ MODAL SETTINGS ════════ */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(17,17,17,0.8); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--cream); border: var(--border); width: 100%; max-width: 500px; padding: clamp(1.5rem,4vh,2rem); display: flex; flex-direction: column; gap: 1.5rem; box-shadow: 10px 10px 0 var(--black); transform: scale(0.95); transition: transform 0.2s; }
+    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-family: 'Fredoka One',cursive; font-size: 1.5rem; text-transform: uppercase; }
+    .modal-close { background: transparent; border: none; font-size: 1.5rem; cursor: pointer; }
+    .modal-section { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .game-types { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+    .game-type { background: var(--white); border: var(--border); padding: 1rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); font-family: 'Fredoka One',cursive; }
+    .game-type.selected { background: var(--purple); color: var(--white); transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--black); }
+    .modal-input { width: 100%; padding: 1rem; border: var(--border); font-family: inherit; font-weight: 800; box-shadow: 4px 4px 0 var(--black); background: var(--white); font-size: 1rem; }
+    .num-controls { display: flex; align-items: center; gap: 1rem; }
+    .num-btn { width: 40px; height: 40px; background: var(--purple); border: var(--border); color: var(--white); font-size: 1.5rem; cursor: pointer; box-shadow: 3px 3px 0 var(--black); }
+    .num-display { background: var(--white); border: var(--border); width: 60px; height: 40px; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka One',cursive; box-shadow: 3px 3px 0 var(--black); }
+    .modal-footer { display: flex; gap: 1rem; margin-top: 1rem; }
+    .btn-cancel, .btn-save { flex: 1; padding: 1rem; font-family: 'Fredoka One',cursive; border: var(--border); cursor: pointer; box-shadow: 4px 4px 0 var(--black); font-size: 1rem; }
+    .btn-cancel { background: var(--white); }
+    .btn-save { background: var(--purple); color: var(--white); }
+
+    /* ════════ LOADING ════════ */
+    .loading-container { display: flex; flex-direction: column; align-items: center; gap: 2rem; width: 100%; max-width: 500px; padding: 2rem; }
+    .logo-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; animation: floatLogo 3.5s ease-in-out infinite; }
+    @keyframes floatLogo { 0%,100% { transform: translateY(0px) rotate(-1.5deg); } 50% { transform: translateY(-14px) rotate(1.5deg); } }
+    .logo-badge { background: var(--yellow); border: var(--border); border-radius: 20px; box-shadow: 8px 8px 0 var(--black); padding: 0.5rem 2.2rem 0.7rem; }
+    .logo-text { font-family: 'Fredoka One',cursive; font-size: 4rem; line-height: 1; color: var(--black); }
+    .logo-text span { color: var(--purple); }
+    .logo-sub { font-size: 0.85rem; font-weight: 800; color: rgba(255,255,255,0.8); letter-spacing: 0.1em; text-transform: uppercase; }
+    .bar-wrap { width: 100%; background: rgba(0,0,0,0.25); border: var(--border); border-radius: 99px; height: 18px; overflow: hidden; box-shadow: var(--shadow); }
+    .bar-fill { height: 100%; width: 0%; background: var(--yellow); border-radius: 99px; transition: width 0.3s linear; }
+    .status-text { font-family: 'Fredoka One',cursive; font-size: 1.2rem; color: var(--white); text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 3px 3px 0 var(--black); animation: fade 1s infinite alternate; }
+    @keyframes fade { from { opacity: 0.6; } to { opacity: 1; } }
+
+    /* ════════ QUESTION ════════ */
+    .question-screen { background: var(--purple); background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px); background-size: 30px 30px; }
+    .question-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem 0; }
+    .q-counter { background: var(--white); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1rem; padding: 0.4rem 1rem; box-shadow: 3px 3px 0 var(--black); color: var(--black); }
+    .q-timer { background: var(--yellow); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.4rem; padding: 0.4rem 1rem; box-shadow: 3px 3px 0 var(--black); color: var(--black); min-width: 70px; text-align: center; }
+    .timer-bar-wrap { height: 8px; background: rgba(0,0,0,0.3); margin: 0.8rem 2rem; border-radius: 4px; overflow: hidden; }
+    .timer-bar-fill { height: 100%; background: var(--yellow); border-radius: 4px; transition: width 1s linear; }
+    .question-box { background: var(--white); border: var(--border); margin: 0 2rem; padding: 1.5rem 2rem; box-shadow: var(--shadow); border-radius: var(--radius); }
+    .question-text { font-family: 'Fredoka One',cursive; font-size: clamp(1.2rem,3vh,1.8rem); color: var(--black); text-align: center; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 2rem; }
+    .option-btn { border: var(--border); padding: 1rem 1.5rem; font-family: 'Fredoka One',cursive; font-size: 1.1rem; cursor: default; box-shadow: 4px 4px 0 var(--black); display: flex; align-items: center; gap: 0.8rem; color: var(--white); border-radius: var(--radius); }
+    .option-btn.opt-a { background: #E53935; }
+    .option-btn.opt-b { background: #1E88E5; }
+    .option-btn.opt-c { background: #43A047; }
+    .option-btn.opt-d { background: #FB8C00; }
+    .option-btn.correct { outline: 6px solid var(--yellow); transform: scale(1.03); }
+    .option-btn.wrong { opacity: 0.4; }
+    .option-label { background: rgba(0,0,0,0.25); border-radius: 4px; padding: 0.1rem 0.5rem; font-size: 0.9rem; }
+    .question-footer { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 2rem 1rem; }
+    .responses-badge { background: var(--white); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 0.95rem; padding: 0.4rem 1rem; box-shadow: 3px 3px 0 var(--black); color: var(--black); }
+    .btn-reveal { background: var(--yellow); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.7rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); transition: transform 0.1s; }
+    .btn-reveal:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--black); }
+    .btn-next { background: var(--green); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.7rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--white); transition: transform 0.1s; }
+    .btn-next:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--black); }
+
+    /* ════════ LEADERBOARD ════════ */
+    .leaderboard-screen { background: var(--cream); }
+    .leaderboard-header { background: var(--purple); padding: 1.5rem 2rem; border-bottom: var(--border); }
+    .leaderboard-title { font-family: 'Fredoka One',cursive; font-size: 2rem; color: var(--white); text-transform: uppercase; text-shadow: 4px 4px 0 var(--black); }
+    .leaderboard-list { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 0.8rem; overflow-y: auto; flex: 1; }
+    .leaderboard-row { display: flex; align-items: center; gap: 1rem; background: var(--white); border: var(--border); padding: 0.8rem 1.2rem; box-shadow: 4px 4px 0 var(--black); border-radius: var(--radius); }
+    .lb-rank { font-family: 'Fredoka One',cursive; font-size: 1.5rem; color: var(--purple); min-width: 40px; }
+    .lb-rank.gold { color: #F5C400; } .lb-rank.silver { color: #9E9E9E; } .lb-rank.bronze { color: #795548; }
+    .lb-name { font-family: 'Fredoka One',cursive; font-size: 1.2rem; color: var(--black); flex: 1; text-transform: uppercase; }
+    .lb-points { font-family: 'Fredoka One',cursive; font-size: 1.3rem; color: var(--purple); }
+    .lb-delta { font-size: 0.85rem; font-weight: 800; color: var(--green); margin-left: 0.3rem; }
+    .leaderboard-footer { padding: 1rem 2rem; border-top: var(--border); background: var(--cream); }
+    .btn-next-round { width: 100%; background: var(--purple); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.3rem; padding: 1rem; color: var(--white); cursor: pointer; box-shadow: 5px 5px 0 var(--black); transition: transform 0.1s; }
+    .btn-next-round:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
+
+    /* ════════ WINNER ════════ */
+    .winner-screen { background: var(--purple); background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px); background-size: 30px 30px; align-items: center; justify-content: center; gap: 2rem; padding: 2rem; }
+    .winner-title { font-family: 'Fredoka One',cursive; font-size: clamp(2rem,6vh,3.5rem); color: var(--yellow); text-shadow: 6px 6px 0 var(--black); text-align: center; text-transform: uppercase; }
+    .winner-card { background: var(--white); border: var(--border); padding: 2rem 3rem; box-shadow: 8px 8px 0 var(--black); display: flex; flex-direction: column; align-items: center; gap: 1rem; border-radius: var(--radius); }
+    .winner-avatar { font-size: 4rem; }
+    .winner-name { font-family: 'Fredoka One',cursive; font-size: 2.5rem; color: var(--purple); text-transform: uppercase; }
+    .winner-score { font-family: 'Fredoka One',cursive; font-size: 1.5rem; color: var(--black); }
+    .winner-quote { font-size: 1rem; font-weight: 800; color: var(--black); font-style: italic; text-align: center; }
+    .winner-podium { display: flex; gap: 1rem; }
+    .podium-item { background: rgba(255,255,255,0.15); border: var(--border); padding: 0.5rem 1rem; font-family: 'Fredoka One',cursive; color: var(--white); text-align: center; border-radius: var(--radius); font-size: 0.95rem; }
+    .winner-actions { display: flex; gap: 1rem; }
+    .btn-home { background: var(--white); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
+    .btn-play-again { background: var(--yellow); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 1: LOBBY
+  ══════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-lobby">
+    <div class="top-half">
+      <div class="code-section">
+        <div class="code-label">ROOM CODE</div>
+        <div class="code-display" id="lobby-code">----</div>
+      </div>
+      <div class="join-section">
+        <div class="join-label">Join Link</div>
+        <div class="link-box">
+          <span id="lobby-link">ricoquiz.app/join/----</span>
+          <p class="btn-copy-icon" onclick="copyLink()">📋</p>
+        </div>
+        <div class="join-label" style="margin-top:0.5rem">Scan to Join</div>
+        <div class="qr-placeholder"><div class="qr-pattern"></div></div>
+      </div>
+    </div>
+
+    <div class="bottom-half">
+      <div>
+        <div class="players-title" id="players-title">PLAYERS (0/10)</div>
+        <div class="players-grid" id="players-grid">
+          <div class="waiting-card">
+            <h1 class="waiting-title">Waiting for players</h1>
+            <div class="dots-container">
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-controls">
+        <button class="btn-config" onclick="openModal()">⚙ SETTINGS</button>
+        <button class="btn-start" id="btn-start-game">START GAME ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 2: LOADING
+  ══════════════════════════════════════════════ -->
+  <div class="screen centered" id="screen-loading">
+    <div class="loading-container">
+      <div class="logo-wrap">
+        <div class="logo-badge">
+          <div class="logo-text">RICO<span>QUIZ</span></div>
+        </div>
+        <p class="logo-sub">Play live with friends</p>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" id="loading-bar"></div></div>
+      <div class="status-text" id="loading-status">Starting...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 3: QUESTION
+  ══════════════════════════════════════════════ -->
+  <div class="screen question-screen" id="screen-question">
+    <div class="question-header">
+      <div class="q-counter" id="q-counter">QUESTION 1 OF 8</div>
+      <div class="q-timer" id="q-timer">15</div>
+    </div>
+    <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-bar"></div></div>
+    <div class="question-box">
+      <div class="question-text" id="question-text">Loading question...</div>
+    </div>
+    <div class="options-grid" id="options-grid">
+      <div class="option-btn opt-a"><span class="option-label">A</span><span id="opt-0"></span></div>
+      <div class="option-btn opt-b"><span class="option-label">B</span><span id="opt-1"></span></div>
+      <div class="option-btn opt-c"><span class="option-label">C</span><span id="opt-2"></span></div>
+      <div class="option-btn opt-d"><span class="option-label">D</span><span id="opt-3"></span></div>
+    </div>
+    <div class="question-footer">
+      <div class="responses-badge" id="responses-badge">RESPONSES: 0/0</div>
+      <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">Reveal Answer</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 4: LEADERBOARD
+  ══════════════════════════════════════════════ -->
+  <div class="screen leaderboard-screen" id="screen-leaderboard">
+    <div class="leaderboard-header">
+      <div class="leaderboard-title">🏆 Scores So Far...</div>
+    </div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
+    <div class="leaderboard-footer">
+      <button class="btn-next-round" onclick="nextQuestion()">Next Round →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCREEN 5: WINNER
+  ══════════════════════════════════════════════ -->
+  <div class="screen winner-screen" id="screen-winner">
+    <div class="winner-title" id="winner-title">🎉 Player is the Winner!</div>
+    <div class="winner-card">
+      <div class="winner-avatar">🏆</div>
+      <div class="winner-name" id="winner-name">-</div>
+      <div class="winner-score" id="winner-score">0 pts</div>
+      <div class="winner-quote" id="winner-quote"></div>
+    </div>
+    <div class="winner-podium" id="winner-podium"></div>
+    <div class="winner-actions">
+      <button class="btn-home" onclick="goHome()">🏠 Home</button>
+      <button class="btn-play-again" onclick="playAgain()">🔄 Play Again</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL SETTINGS
+  ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal" onclick="handleOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">SETTINGS</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div>
+        <p class="modal-section">GAME TYPE</p>
+        <div class="game-types">
+          <div class="game-type selected" onclick="selectType(this,'ai_trivia')">
+            <div>🧠</div><div>AI TRIVIA</div>
+          </div>
+          <div class="game-type" onclick="selectType(this,'liar_game')">
+            <div>🎭</div><div>LIAR GAME</div>
+          </div>
+        </div>
+      </div>
+      <div id="topic-section">
+        <p class="modal-section">TOPIC (FOR AI)</p>
+        <input class="modal-input" id="topic-input" type="text" placeholder="e.g. History, Sports..."/>
+      </div>
+      <div>
+        <p class="modal-section">NUMBER OF QUESTIONS</p>
+        <div class="num-controls">
+          <button class="num-btn" onclick="changeNum(-1)">−</button>
+          <div class="num-display" id="numVal">8</div>
+          <button class="num-btn" onclick="changeNum(1)">+</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
+        <button class="btn-save" onclick="saveSettings()">SAVE</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/wsClient.js"></script>
+  <script>
+    // ── Estado local ──────────────────────────────────────────────────────────
+    let selectedType = 'ai_trivia';
+    let totalPlayers = 0;
+    let timerInterval = null;
+    let currentCorrect = -1;
+    let timeLimit = 15;
+
+    const AVATARS = ['🐙','🦊','🐸','🦁','🐼','🦄','🐯','🐧','🦋','🐻'];
+    const COLORS  = ['bg-blue','bg-yellow','bg-red','bg-green','bg-pink','bg-orange'];
+
+    // ── Navegación entre screens ──────────────────────────────────────────────
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ── Lobby ─────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      const code = sessionStorage.getItem('roomCode');
+      document.getElementById('lobby-code').textContent = code || '----';
+      document.getElementById('lobby-link').textContent = `ricoquiz.app/join/${code}`;
+    });
+
+    function copyLink() {
+      const code = sessionStorage.getItem('roomCode');
+      navigator.clipboard.writeText(`ricoquiz.app/join/${code}`);
+    }
+
+    function renderPlayers(players) {
+      totalPlayers = players.length;
+      document.getElementById('players-title').textContent = `PLAYERS (${players.length}/10)`;
+      const grid = document.getElementById('players-grid');
+
+      if (players.length === 0) {
+        grid.innerHTML = `
+          <div class="waiting-card">
+            <h1 class="waiting-title">Waiting for players</h1>
+            <div class="dots-container">
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = players.map((p, i) => `
+        <div class="player-chip">
+          <div class="player-avatar ${COLORS[i % COLORS.length]}">${AVATARS[i % AVATARS.length]}</div>
+          <div class="player-name">${p.name}</div>
+        </div>`).join('');
+    }
+
+    ws.on('PLAYER_JOINED', ({ players }) => renderPlayers(players));
+    ws.on('PLAYER_LEFT',   ({ players }) => renderPlayers(players));
+
+    // ── Settings modal ────────────────────────────────────────────────────────
+    function openModal()  { document.getElementById('modal').classList.add('open'); }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+    function handleOverlay(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+    function selectType(el, type) {
+      document.querySelectorAll('.game-type').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedType = type;
+      document.getElementById('topic-section').style.display = type === 'ai_trivia' ? 'block' : 'none';
+    }
+
+    function changeNum(d) {
+      const el = document.getElementById('numVal');
+      el.textContent = Math.max(3, Math.min(20, parseInt(el.textContent) + d));
+    }
+
+    function saveSettings() {
+      const topic = document.getElementById('topic-input').value.trim();
+      const numQuestions = parseInt(document.getElementById('numVal').textContent);
+      if (selectedType === 'ai_trivia' && !topic) {
+        alert('Please enter a topic for AI Trivia.');
+        return;
+      }
+      ws.send('SAVE_SETTINGS', { gameType: selectedType, topic, numQuestions });
+      closeModal();
+    }
+
+    // ── Start game ────────────────────────────────────────────────────────────
+    document.getElementById('btn-start-game').addEventListener('click', () => {
+      ws.send('START_GAME');
+    });
+
+    ws.on('LOADING', () => {
+      showScreen('screen-loading');
+      animateLoadingBar();
+    });
+
+    function animateLoadingBar() {
+      const bar = document.getElementById('loading-bar');
+      const status = document.getElementById('loading-status');
+      const steps = ['Connecting...', 'Setting up room...', 'Generating questions...', 'Almost ready!'];
+      let progress = 0, stepIndex = 0;
+
+      const iv = setInterval(() => {
+        progress += Math.random() * 12;
+        if (progress >= 90) { progress = 90; clearInterval(iv); } // se queda en 90 hasta GAME_READY
+        bar.style.width = progress + '%';
+        const nextStep = Math.floor(progress / (100 / steps.length));
+        if (nextStep > stepIndex && nextStep < steps.length) {
+          stepIndex = nextStep;
+          status.textContent = steps[stepIndex];
+        }
+      }, 500);
+    }
+
+    ws.on('GAME_READY', () => {
+      // Completar la barra y esperar un momento antes de mostrar el botón
+      document.getElementById('loading-bar').style.width = '100%';
+      document.getElementById('loading-status').textContent = 'Ready!';
+      setTimeout(() => {
+        ws.send('NEXT_QUESTION');
+      }, 1000);
+    });
+
+    // ── Question ──────────────────────────────────────────────────────────────
+    ws.on('QUESTION', ({ questionIndex, totalQuestions, question, options, correct, timeLimit: tl }) => {
+      currentCorrect = correct;
+      timeLimit = tl || 15;
+
+      document.getElementById('q-counter').textContent = `QUESTION ${questionIndex + 1} OF ${totalQuestions}`;
+      document.getElementById('question-text').textContent = question;
+      document.getElementById('responses-badge').textContent = `RESPONSES: 0/${totalPlayers}`;
+      document.getElementById('btn-reveal').style.display = 'block';
+
+      // Render options
+      const labels = ['A','B','C','D'];
+      const classes = ['opt-a','opt-b','opt-c','opt-d'];
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = options.map((opt, i) => `
+        <div class="option-btn ${classes[i]}">
+          <span class="option-label">${labels[i]}</span>
+          <span>${opt}</span>
+        </div>`).join('');
+
+      // Timer
+      startTimer(timeLimit);
+      showScreen('screen-question');
+    });
+
+    ws.on('TIMER_TICK', ({ secondsLeft }) => {
+      document.getElementById('q-timer').textContent = secondsLeft;
+      document.getElementById('timer-bar').style.width = `${(secondsLeft / timeLimit) * 100}%`;
+    });
+
+    ws.on('ANSWER_COUNT', ({ answeredCount, totalPlayers: tp }) => {
+      document.getElementById('responses-badge').textContent = `RESPONSES: ${answeredCount}/${tp}`;
+    });
+
+    function startTimer(seconds) {
+      document.getElementById('q-timer').textContent = seconds;
+      document.getElementById('timer-bar').style.width = '100%';
+    }
+
+    function revealAnswer() {
+      ws.send('REVEAL_ANSWER');
+    }
+
+    ws.on('ANSWER_REVEALED', ({ correct, correctText }) => {
+      document.getElementById('btn-reveal').style.display = 'none';
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach((btn, i) => {
+        if (i === correct) btn.classList.add('correct');
+        else btn.classList.add('wrong');
+      });
+    });
+
+    // ── Leaderboard ───────────────────────────────────────────────────────────
+    ws.on('LEADERBOARD', ({ leaderboard }) => {
+      const rankLabels = ['🥇','🥈','🥉'];
+      const rankClasses = ['gold','silver','bronze'];
+
+      document.getElementById('leaderboard-list').innerHTML = leaderboard.map((p, i) => `
+        <div class="leaderboard-row">
+          <div class="lb-rank ${rankClasses[i] || ''}">${rankLabels[i] || i + 1}</div>
+          <div class="lb-name">${p.name}</div>
+          <div class="lb-points">
+            ${p.score}
+            ${p.lastPoints > 0 ? `<span class="lb-delta">+${p.lastPoints}</span>` : ''}
+          </div>
+        </div>`).join('');
+
+      showScreen('screen-leaderboard');
+    });
+
+    function nextQuestion() {
+      ws.send('NEXT_QUESTION');
+    }
+
+    // ── Game Over ─────────────────────────────────────────────────────────────
+    ws.on('GAME_OVER', ({ winner, leaderboard }) => {
+      document.getElementById('winner-title').textContent = `🎉 ${winner.name} is the Winner!`;
+      document.getElementById('winner-name').textContent = winner.name;
+      document.getElementById('winner-score').textContent = `${winner.score} pts`;
+      document.getElementById('winner-quote').textContent = winner.victoryQuote ? `"${winner.victoryQuote}"` : '';
+
+      // Podio (2do y 3ro)
+      document.getElementById('winner-podium').innerHTML = leaderboard.slice(1, 3).map((p, i) => `
+        <div class="podium-item">
+          ${i === 0 ? '🥈' : '🥉'} ${p.name}<br>${p.score} pts
+        </div>`).join('');
+
+      showScreen('screen-winner');
+    });
+
+    // ── Errores ───────────────────────────────────────────────────────────────
+    ws.on('ERROR', ({ message }) => alert(message));
+
+    // ── Winner actions ────────────────────────────────────────────────────────
+    function goHome() {
+      sessionStorage.clear();
+      window.location.href = '/';
+    }
+
+    function playAgain() {
+      sessionStorage.removeItem('roomCode');
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,10 @@
 <!doctype html>
 <html lang="es">
   <head>
+     <script>
+      // this line is added in order to kill a room if the host goes back to the main page
+      sessionStorage.clear();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RicoQuiz</title>
@@ -449,21 +453,14 @@
         }
       }
 
-      function goJoin() {
-        const code = ["c1", "c2", "c3", "c4"]
-          .map((id) => document.getElementById(id).value)
-          .join("")
-          .toUpperCase();
-
-        if (code.length < 4) {
-          alert("Por favor, ingresa las 4 letras del código.");
-          return;
-        }
-
-        // Solo guardamos el código, todavía no conectamos
-        sessionStorage.setItem("roomCode", code);
-        window.location.href = "/player/player-setup.html";
-      }
+function goJoin() {
+  const code = ['c1','c2','c3','c4']
+    .map(id => document.getElementById(id).value)
+    .join('').toUpperCase();
+  if (code.length < 4) { alert('Enter the 4-letter code.'); return; }
+  sessionStorage.setItem('roomCode', code);
+  window.location.href = '/player/player.html';
+}
     </script>
     <script>
       // this line is added in order to kill a room if the host goes back to the main page

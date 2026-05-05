@@ -277,6 +277,9 @@
       </div>
     </div>
   </body>
+  <script>
+    sessionStorage.removeItem('role');
+  </script>
   <script src="/js/wsClient.js"></script>
   <script>
     document.getElementById("btn-ready").addEventListener("click", () => {
@@ -295,7 +298,7 @@
     ws.on("JOINED_OK", ({ code, name }) => {
       sessionStorage.setItem("playerName", name);
       sessionStorage.setItem("role", "player");
-      window.location.href = "/player/player-wait.html";
+      //window.location.href = "/player/player-wait.html";
     });
 
     ws.on("JOIN_ERROR", ({ message }) => {

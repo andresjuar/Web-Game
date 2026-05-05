@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ 
   model: "gemini-2.5-flash",
   generationConfig: {
-    responseMimeType: "application/json", // Forzamos respuesta JSON nativa
+    responseMimeType: "application/json", 
   }
 });
 
@@ -36,8 +36,51 @@ async function generateTriviaQuestions(topic, count = 8) {
     return JSON.parse(text);
   } catch (error) {
     console.error("Error detallado:", error);
-    throw error;
+    //throw error;
   }
+  console.log("Using backup questions");
+  return JSON.parse(`[
+  {
+    "question": "Which company developed VALORANT?",
+    "options": ["Valve", "Riot Games", "Epic Games", "Blizzard Entertainment"],
+    "correct": 1
+  },
+  {
+    "question": "What is the maximum number of players on a VALORANT team?",
+    "options": ["4", "5", "6", "7"],
+    "correct": 1
+  },
+  {
+    "question": "Which agent is known for using a bow and recon abilities?",
+    "options": ["Sova", "Phoenix", "Jett", "Brimstone"],
+    "correct": 0
+  },
+  {
+    "question": "What is the name of the spike defusal game mode in VALORANT?",
+    "options": ["Demolition", "Search and Destroy", "Unrated", "Spike Rush"],
+    "correct": 3
+  },
+  {
+    "question": "Which agent can revive fallen teammates?",
+    "options": ["Sage", "Skye", "Killjoy", "Reyna"],
+    "correct": 0
+  },
+  {
+    "question": "What currency is used to buy weapons during a match?",
+    "options": ["Credits", "Coins", "Gold", "Points"],
+    "correct": 0
+  },
+  {
+    "question": "Which map features three bomb sites?",
+    "options": ["Bind", "Haven", "Ascent", "Split"],
+    "correct": 1
+  },
+  {
+    "question": "Which agent is known for teleportation abilities?",
+    "options": ["Omen", "Cypher", "Breach", "Raze"],
+    "correct": 0
+  }
+]`);
 }
 /**
  * Generates Liar Game prompts.
