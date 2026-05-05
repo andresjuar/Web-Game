@@ -1,8 +1,7 @@
 /**
  * wsClient.js
  * Shared WebSocket client for all pages.
- * Attach to window so any page can use it.
- *
+ * IIFE Immediately Invoked Function Expression
  * Usage:
  *   ws.send("CREATE_ROOM")
  *   ws.send("JOIN_ROOM", { code: "ABCD", name: "Diego" })
@@ -22,8 +21,10 @@ const ws = (() => {
       // Attempt rejoin if we have a saved session
       const code = sessionStorage.getItem("roomCode");
       const name = sessionStorage.getItem("playerName");
-      if (code && name) {
-        send("REJOIN_ROOM", { code, name });
+      const role = sessionStorage.getItem("role");
+      console.log(role)
+      if (code && role ) {
+        send("REJOIN_ROOM", { code, name, role });
       }
     });
 
@@ -42,16 +43,17 @@ const ws = (() => {
       console.error("[WS] Error:", err);
     });
   }
-
+  //función para enviar
   function send(type, payload = {}) {
     if (socket?.readyState === WebSocket.OPEN) {
       console.log("[WS] →", type, payload);
       socket.send(JSON.stringify({ type, payload }));
     } else {
+      // esto es para implementar colas, que se vayan guardando mensajes que no se pudieron enviar
       console.warn("[WS] Not connected, queuing is not implemented yet.");
     }
   }
-
+  // función para recibir
   function on(type, callback) {
     if (!handlers[type]) handlers[type] = [];
     handlers[type].push(callback);

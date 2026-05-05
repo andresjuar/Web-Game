@@ -46,7 +46,7 @@ function findSocketContext(socket) {
   return null;
 }
 
-// Main handler 
+// Main handler
 
 function handleConnection(socket) {
   assignSocketId(socket);
@@ -57,7 +57,9 @@ function handleConnection(socket) {
     try {
       msg = JSON.parse(raw);
     } catch {
-      socket.send(JSON.stringify({ type: "ERROR", payload: { message: "Invalid JSON" } }));
+      socket.send(
+        JSON.stringify({ type: "ERROR", payload: { message: "Invalid JSON" } }),
+      );
       return;
     }
 
@@ -67,39 +69,59 @@ function handleConnection(socket) {
     // Route to the correct handler
     switch (type) {
       // ── Room management ────────────────────────────────────────────────────
-      case "CREATE_ROOM":     return handleCreateRoom(socket);
-      case "JOIN_ROOM":       return handleJoinRoom(socket, payload);
-      case "REJOIN_ROOM":     return handleRejoinRoom(socket, payload);
+      case "CREATE_ROOM":
+        return handleCreateRoom(socket);
+      case "JOIN_ROOM":
+        return handleJoinRoom(socket, payload);
+      case "REJOIN_ROOM":
+        return handleRejoinRoom(socket, payload);
 
       // ── Host: game settings & flow control ─────────────────────────────────
-      case "SAVE_SETTINGS":   return handleSaveSettings(socket, payload);
-      case "START_GAME":      return handleStartGame(socket);
-      case "NEXT_QUESTION":   return handleNextQuestion(socket);
-      case "REVEAL_ANSWER":   return handleRevealAnswer(socket);
-      case "FORCE_REVEAL":    return handleForceReveal(socket); // liar game
+      case "SAVE_SETTINGS":
+        return handleSaveSettings(socket, payload);
+      case "START_GAME":
+        return handleStartGame(socket);
+      case "NEXT_QUESTION":
+        return handleNextQuestion(socket);
+      case "REVEAL_ANSWER":
+        return handleRevealAnswer(socket);
+      case "FORCE_REVEAL":
+        return handleForceReveal(socket); // liar game
 
       // ── Player: answers & votes ────────────────────────────────────────────
-      case "SUBMIT_ANSWER":   return handleSubmitAnswer(socket, payload);
-      case "SUBMIT_TEXT":     return handleSubmitText(socket, payload);  // liar game
-      case "SUBMIT_VOTE":     return handleSubmitVote(socket, payload);  // liar game
+      case "SUBMIT_ANSWER":
+        return handleSubmitAnswer(socket, payload);
+      case "SUBMIT_TEXT":
+        return handleSubmitText(socket, payload); // liar game
+      case "SUBMIT_VOTE":
+        return handleSubmitVote(socket, payload); // liar game
 
       default:
-        socket.send(JSON.stringify({ type: "ERROR", payload: { message: `Unknown event: ${type}` } }));
+        socket.send(
+          JSON.stringify({
+            type: "ERROR",
+            payload: { message: `Unknown event: ${type}` },
+          }),
+        );
     }
   });
 
   socket.on("close", () => handleDisconnect(socket));
-  socket.on("error", (err) => console.error(`[WS] Error on ${socket.id}:`, err.message));
+  socket.on("error", (err) =>
+    console.error(`[WS] Error on ${socket.id}:`, err.message),
+  );
 }
 
 // Room management
 
 function handleCreateRoom(socket) {
   const room = createRoom(socket);
-  socket.send(JSON.stringify({
-    type: "ROOM_CREATED",
-    payload: { code: room.code },
-  }));
+  socket.send(
+    JSON.stringify({
+      type: "ROOM_CREATED",
+      payload: { code: room.code },
+    }),
+  );
   console.log(`[WS] Room created: ${room.code}`);
 }
 
@@ -107,15 +129,30 @@ function handleJoinRoom(socket, { code, name, victoryQuote }) {
   const room = getRoom(code?.toUpperCase());
 
   if (!room) {
-    socket.send(JSON.stringify({ type: "JOIN_ERROR", payload: { message: "Room not found." } }));
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Room not found." },
+      }),
+    );
     return;
   }
   if (room.state !== "lobby") {
-    socket.send(JSON.stringify({ type: "JOIN_ERROR", payload: { message: "Game already in progress." } }));
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Game already in progress." },
+      }),
+    );
     return;
   }
   if (Object.keys(room.players).length >= 10) {
-    socket.send(JSON.stringify({ type: "JOIN_ERROR", payload: { message: "Room is full (max 10 players)." } }));
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Room is full (max 10 players)." },
+      }),
+    );
     return;
   }
 
@@ -123,10 +160,12 @@ function handleJoinRoom(socket, { code, name, victoryQuote }) {
   addPlayer(room, socket, safeName, victoryQuote);
 
   // Confirm to player
-  socket.send(JSON.stringify({
-    type: "JOINED_OK",
-    payload: { code: room.code, name: safeName },
-  }));
+  socket.send(
+    JSON.stringify({
+      type: "JOINED_OK",
+      payload: { code: room.code, name: safeName },
+    }),
+  );
 
   // Notify host
   sendToHost(room, "PLAYER_JOINED", {
@@ -136,17 +175,46 @@ function handleJoinRoom(socket, { code, name, victoryQuote }) {
   console.log(`[WS] ${safeName} joined room ${room.code}`);
 }
 
-function handleRejoinRoom(socket, { code, name }) {
+function handleRejoinRoom(socket, { code, name, role }) {
   const room = getRoom(code?.toUpperCase());
   if (!room) {
-    socket.send(JSON.stringify({ type: "JOIN_ERROR", payload: { message: "Room not found." } }));
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Room not found." },
+      }),
+    );
     return;
+  }
+  // this is to manage when the host changes views
+
+  //console.log("re joining");
+  if (role === "host") {
+    //console.log(role);
+    //erase timer
+    if (room._hostDisconnectTimer) {
+      clearTimeout(room._hostDisconnectTimer);
+      room._hostDisconnectTimer = null;
+    }
+
+    room.hostSocket = socket;
+    socket.send(
+      JSON.stringify({
+        type: "REJOINED_OK",
+        payload: { code: room.code, role: "host", state: room.state },
+      }),
+    );
   }
 
   // Find player by name (best effort reconnect)
   const entry = Object.entries(room.players).find(([, p]) => p.name === name);
   if (!entry) {
-    socket.send(JSON.stringify({ type: "JOIN_ERROR", payload: { message: "Player not found in room." } }));
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Player not found in room." },
+      }),
+    );
     return;
   }
 
@@ -156,10 +224,17 @@ function handleRejoinRoom(socket, { code, name }) {
   player.socket = socket;
   room.players[socket.id] = player;
 
-  socket.send(JSON.stringify({
-    type: "REJOINED_OK",
-    payload: { code: room.code, name: player.name, score: player.score, state: room.state },
-  }));
+  socket.send(
+    JSON.stringify({
+      type: "REJOINED_OK",
+      payload: {
+        code: room.code,
+        name: player.name,
+        score: player.score,
+        state: room.state,
+      },
+    }),
+  );
 
   console.log(`[WS] ${player.name} rejoined room ${room.code}`);
 }
@@ -175,10 +250,12 @@ function handleSaveSettings(socket, { gameType, topic, numQuestions }) {
   room.topic = topic || "";
   room.numQuestions = Math.min(Math.max(Number(numQuestions) || 8, 3), 20);
 
-  socket.send(JSON.stringify({
-    type: "SETTINGS_SAVED",
-    payload: { gameType, topic: room.topic, numQuestions: room.numQuestions },
-  }));
+  socket.send(
+    JSON.stringify({
+      type: "SETTINGS_SAVED",
+      payload: { gameType, topic: room.topic, numQuestions: room.numQuestions },
+    }),
+  );
 }
 
 function handleStartGame(socket) {
@@ -187,11 +264,21 @@ function handleStartGame(socket) {
   const { room } = ctx;
 
   if (Object.keys(room.players).length < 1) {
-    socket.send(JSON.stringify({ type: "ERROR", payload: { message: "Need at least 1 player to start." } }));
+    socket.send(
+      JSON.stringify({
+        type: "ERROR",
+        payload: { message: "Need at least 1 player to start." },
+      }),
+    );
     return;
   }
   if (!room.gameType) {
-    socket.send(JSON.stringify({ type: "ERROR", payload: { message: "Please select a game type in Settings." } }));
+    socket.send(
+      JSON.stringify({
+        type: "ERROR",
+        payload: { message: "Please select a game type in Settings." },
+      }),
+    );
     return;
   }
 
@@ -220,7 +307,10 @@ function handleRevealAnswer(socket) {
   const { room } = ctx;
 
   if (room.gameType === "ai_trivia" && room.state === "question") {
-    if (room.timer) { clearInterval(room.timer); room.timer = null; }
+    if (room.timer) {
+      clearInterval(room.timer);
+      room.timer = null;
+    }
     aiTrivia.revealAnswer(room);
   }
 }
@@ -235,7 +325,7 @@ function handleForceReveal(socket) {
   }
 }
 
-// Player: answers 
+// Player: answers
 
 function handleSubmitAnswer(socket, { answerIndex }) {
   const ctx = findSocketContext(socket);
@@ -277,12 +367,17 @@ function handleDisconnect(socket) {
   const { room, role } = ctx;
 
   if (role === "host") {
-    // Host left -> notify all players and destroy room
-    broadcastToPlayers(room, "HOST_DISCONNECTED", {
-      message: "The host has left the game.",
-    });
-    deleteRoom(room.code);
-    console.log(`[WS] Room ${room.code} destroyed (host left)`);
+    room._hostDisconnectTimer = setTimeout(() => {
+      if (room.hostSocket === null || room.hostSocket.readyState !== 1) {
+        broadcastToPlayers(room, "HOST_DISCONNECTED", {
+          message: "The host has left the game.",
+        });
+        deleteRoom(room.code);
+        console.log(`[WS] Room ${room.code} destroyed (host timeout)`);
+      }
+    }, 5000);
+
+    room.hostSocket = null;
   } else {
     // Player left
     const player = room.players[socket.id];

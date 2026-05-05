@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mostrar el código en pantalla
   document.querySelector('.code-display').textContent = code;
   document.querySelector('.link-box span').textContent = `ricoquiz.app/join/${code}`;
+  renderPlayers([]);
 });
 
 // ── Jugadores entrando en tiempo real ─────────────────────────────────────────
@@ -20,10 +21,24 @@ const AVATARS = ['🐙','🦊','🐸','🦁','🐼','🦄','🐯','🐧','🦋',
 const COLORS  = ['bg-blue','bg-yellow','bg-red','bg-green'];
 
 function renderPlayers(players) {
+  
   const grid = document.querySelector('.players-grid');
   const title = document.querySelector('.players-title');
 
   title.textContent = `PLAYERS (${players.length}/10)`;
+
+  if(players.length === 0){
+    grid.innerHTML = `  <div class="waiting-card">
+        <h1 class="waiting-title">Waiting for players</h1>
+        
+        <div class="dots-container">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+              `
+                return;
+  } 
 
   grid.innerHTML = players.map((p, i) => `
     <div class="player-chip">
@@ -41,7 +56,7 @@ let selectedType = 'ai_trivia';
 function selectType(el) {
   document.querySelectorAll('.game-type').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  const types = ['ai_trivia', 'saved_quiz', 'liar_game'];
+  const types = ['ai_trivia', 'liar_game'];
   const index = [...document.querySelectorAll('.game-type')].indexOf(el);
   selectedType = types[index];
 
@@ -75,3 +90,5 @@ ws.on('LOADING', () => {
 ws.on('ERROR', ({ message }) => {
   alert(message);
 });
+
+console.log("host room")

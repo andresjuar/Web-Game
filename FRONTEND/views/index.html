@@ -465,7 +465,12 @@
         window.location.href = "/player/player-setup.html";
       }
     </script>
+    <script>
+      // this line is added in order to kill a room if the host goes back to the main page
+      sessionStorage.clear();
+    </script>
     <script src="/js/wsClient.js"></script>
     <script src="/js/start.js"></script>
+
   </body>
 </html>

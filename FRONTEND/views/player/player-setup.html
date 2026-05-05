@@ -270,7 +270,7 @@
       <div class="footer">
         <button
           class="btn-ready"
-          onclick="window.location = 'player-placeholder.html'"
+          id="btn-ready"
         >
           I'M READY! ✓
         </button>
@@ -285,7 +285,7 @@
       const code = sessionStorage.getItem("roomCode");
 
       if (!name) {
-        alert("Por favor ingresa tu nombre.");
+        alert("Please enter your name");
         return;
       }
 

@@ -282,6 +282,53 @@
             .btn-cancel { background: var(--white); }
             .btn-save { background: var(--purple); color: var(--white); }
 
+
+            .waiting-card {
+      width: 500px;
+      height: 200px;
+      background-color: var(--white);
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .waiting-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.2rem;
+      color: var(--black);
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    /* ANIMACIÓN DE PUNTOS */
+    .dots-container {
+      display: flex;
+      gap: 8px;
+      margin-top: 0.5rem;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      background-color: var(--purple);
+      border: 2px solid var(--black);
+      border-radius: 50%;
+      animation: pulse 1.4s infinite ease-in-out both;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
+
             
         </style>
     </head>
@@ -296,7 +343,7 @@
             <div class="join-section">
                 <div class="join-label">Join Link</div>
                 <div class="link-box">
-                    <span>quizlive.app/join/ABCD</span>
+                    <span>quizlive.app/?ABCD</span>
                     <p class="btn-copy-icon">📋</p>
                 </div>
                 <div class="join-label" style="margin-top: 0.5rem;">Scan to Join</div>
@@ -308,24 +355,9 @@
 
         <div class="bottom-half">
             <div>
-                <div class="players-title">PLAYERS (4/4)</div>
+                <div class="players-title">PLAYERS (0/10)</div>
                 <div class="players-grid">
-                    <div class="player-chip">
-                        <div class="player-avatar bg-blue">👦🏽</div>
-                        <div class="player-name">LUIS</div>
-                    </div>
-                    <div class="player-chip">
-                        <div class="player-avatar bg-yellow">👩🏻</div>
-                        <div class="player-name">MARI</div>
-                    </div>
-                    <div class="player-chip">
-                        <div class="player-avatar bg-red">🧔🏻‍♂️</div>
-                        <div class="player-name">DIEGO</div>
-                    </div>
-                    <div class="player-chip">
-                        <div class="player-avatar bg-green">👱🏼‍♀️</div>
-                        <div class="player-name">SOFIA</div>
-                    </div>
+                          
                 </div>
             </div>
 
@@ -350,15 +382,15 @@
                             <div class="gt-icon">🧠</div>
                             <div class="gt-name">AI TRIVIA</div>
                         </div>
-                        <div class="game-type" onclick="selectType(this)">
+                       <!--  <div class="game-type" onclick="selectType(this)">
                             <div class="gt-icon">📋</div>
                             <div class="gt-name">SAVED QUIZ</div>
-                        </div>
+                        </div> -->
                         <div class="game-type" onclick="selectType(this)">
                             <div class="gt-icon">🎭</div>
                             <div class="gt-name">LIAR GAME</div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
                 <div id="topic-section">
                     <p class="modal-section">TOPIC (FOR AI)</p>
