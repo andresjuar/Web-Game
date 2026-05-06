@@ -86,6 +86,12 @@ async function generateTriviaQuestions(topic, count = 8) {
  * Generates Liar Game prompts.
  */
 async function generateLiarPrompts(count = 5) {
+  const fallbackPrompts = [
+    "What’s the weirdest food combination you genuinely enjoy?",
+    "If you could instantly become an expert at one completely unnecessary hobby, what would it be?",
+    "What’s a small everyday thing that irrationally annoys you?"
+  ];
+
   const prompt = `You are a party game host. Generate exactly ${count} fun, personal, open-ended prompts for a social deduction game called "Liar Game".
 
 Rules:
@@ -96,17 +102,29 @@ Rules:
 Return a JSON array of strings. Example:
 ["Name a movie that made you cry", "What is your most useless skill?"]`;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const rawText = response.text();
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const rawText = response.text();
 
-  const prompts = JSON.parse(rawText);
+    if (!rawText) {
+      return fallbackPrompts;
+    }
 
-  if (!Array.isArray(prompts) || prompts.some((p) => typeof p !== "string")) {
-    throw new Error("Gemini did not return a valid array of strings");
+    const prompts = JSON.parse(rawText);
+
+    if (
+      !Array.isArray(prompts) ||
+      prompts.some((p) => typeof p !== "string")
+    ) {
+      return fallbackPrompts;
+    }
+
+    return prompts;
+  } catch (error) {
+    console.error("Error generating prompts:", error);
+    return fallbackPrompts;
   }
-
-  return prompts;
 }
 
 module.exports = { generateTriviaQuestions, generateLiarPrompts };

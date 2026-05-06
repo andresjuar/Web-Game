@@ -125,7 +125,7 @@ function handleCreateRoom(socket) {
   console.log(`[WS] Room created: ${room.code}`);
 }
 
-function handleJoinRoom(socket, { code, name, victoryQuote }) {
+function handleJoinRoom(socket, { code, name, victoryQuote, avatar }) {
   const room = getRoom(code?.toUpperCase());
 
   if (!room) {
@@ -157,13 +157,13 @@ function handleJoinRoom(socket, { code, name, victoryQuote }) {
   }
 
   const safeName = (name || "Player").trim().substring(0, 20);
-  addPlayer(room, socket, safeName, victoryQuote);
+  addPlayer(room, socket, safeName, victoryQuote, avatar );
 
   // Confirm to player
   socket.send(
     JSON.stringify({
       type: "JOINED_OK",
-      payload: { code: room.code, name: safeName },
+      payload: { code: room.code, name: safeName, avatar: avatar },
     }),
   );
 

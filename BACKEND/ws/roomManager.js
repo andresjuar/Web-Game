@@ -59,11 +59,12 @@ function deleteRoom(code) {
 
 // Player management 
 
-function addPlayer(room, socket, name, victoryQuote) {
+function addPlayer(room, socket, name, victoryQuote, avatar) {
   const id = socket.id;
   room.players[id] = {
     socket,
     name,
+    avatar,
     victoryQuote: victoryQuote || "",
     score: 0,
     lastAnswerCorrect: false,
