@@ -23,7 +23,7 @@ const {
 } = require("./roomManager");
 
 const aiTrivia = require("../game/aiTrivia");
-//const liarGame = require("./liarGame");
+const liarGame = require("../game/liarGame");
 
 // Socket identity helpers
 

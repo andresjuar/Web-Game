@@ -23,6 +23,7 @@
 
     body { font-family: 'Nunito', sans-serif; height: 100vh; overflow: hidden; }
 
+    /* ── Cada screen ocupa todo el viewport, oculta por defecto ── */
     .screen { display: none; height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
     .screen.centered {
@@ -162,173 +163,6 @@
     .winner-actions { display: flex; gap: 1rem; }
     .btn-home { background: var(--white); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
     .btn-play-again { background: var(--yellow); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
-
-    /* ════════ LIAR GAME: COMPARTIDO ════════ */
-    .liar-screen {
-      background: var(--purple);
-      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
-      background-size: 30px 30px;
-    }
-
-    .liar-host-layout {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 0;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* Panel izquierdo — contenido principal */
-    .liar-main-panel {
-      padding: clamp(1.5rem, 4vh, 3rem) clamp(1.5rem, 3vw, 3rem);
-      display: flex; flex-direction: column; gap: 1.5rem;
-      overflow-y: auto;
-    }
-
-    /* Panel derecho — estado / contadores */
-    .liar-side-panel {
-      background: rgba(0,0,0,0.2);
-      border-left: var(--border);
-      padding: clamp(1.5rem, 4vh, 3rem) clamp(1rem, 2vw, 2rem);
-      display: flex; flex-direction: column; gap: 1.5rem;
-      overflow-y: auto;
-    }
-
-    .liar-host-header {
-      padding: clamp(1rem, 2.5vh, 1.8rem) clamp(1.5rem, 3vw, 3rem);
-      border-bottom: var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0,0,0,0.15);
-      flex-shrink: 0;
-    }
-
-    .liar-host-title {
-      font-family: 'Fredoka One', cursive;
-      font-size: clamp(1.2rem, 3vh, 1.8rem);
-      color: var(--white);
-      text-transform: uppercase;
-      text-shadow: 3px 3px 0 var(--black);
-    }
-
-    .liar-round-pill {
-      background: var(--yellow); color: var(--black);
-      border: 3px solid var(--black); border-radius: 99px;
-      font-family: 'Fredoka One', cursive; font-size: 1rem;
-      padding: 0.3rem 1rem; box-shadow: 3px 3px 0 var(--black);
-    }
-
-    .liar-timer-wrap {
-      background: rgba(0,0,0,0.25); border: 3px solid var(--black);
-      border-radius: 99px; height: 14px; overflow: hidden;
-      box-shadow: 3px 3px 0 var(--black);
-    }
-    .liar-timer-fill {
-      height: 100%; background: var(--yellow);
-      border-radius: 99px; transition: width 1s linear;
-    }
-    .liar-timer-fill.urgent { background: #E53935; }
-
-    .liar-timer-label {
-      font-family: 'Fredoka One', cursive; font-size: 1rem;
-      color: rgba(255,255,255,0.8); text-align: right;
-    }
-
-    /* Question card */
-    .liar-host-question-card {
-      background: var(--cream); border: var(--border);
-      border-radius: 12px; padding: 1.5rem 2rem;
-      box-shadow: var(--shadow);
-    }
-    .liar-host-q-label {
-      font-size: 0.8rem; font-weight: 900; text-transform: uppercase;
-      color: var(--purple); margin-bottom: 0.5rem; letter-spacing: 1px;
-    }
-    .liar-host-q-text {
-      font-family: 'Fredoka One', cursive;
-      font-size: clamp(1.3rem, 4vh, 2rem);
-      color: var(--black); line-height: 1.2;
-    }
-
-    /* Subject badge */
-    .liar-subject-badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: var(--white); border: var(--border);
-      border-radius: 12px; padding: 0.6rem 1.2rem;
-      box-shadow: 4px 4px 0 var(--black); align-self: flex-start;
-    }
-    .liar-subject-emoji { font-size: 1.5rem; }
-    .liar-subject-info { display: flex; flex-direction: column; }
-    .liar-subject-tag { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: var(--purple); letter-spacing: 1px; }
-    .liar-subject-name { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--black); text-transform: uppercase; line-height: 1; }
-
-    /* Progress counter */
-    .liar-progress-card {
-      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 12px; padding: 1.2rem;
-      display: flex; flex-direction: column; gap: 0.5rem;
-    }
-    .liar-progress-label {
-      font-size: 0.8rem; font-weight: 900; text-transform: uppercase;
-      color: rgba(255,255,255,0.7); letter-spacing: 1px;
-    }
-    .liar-progress-count {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2.5rem; color: var(--yellow); line-height: 1;
-    }
-    .liar-progress-bar-wrap {
-      height: 8px; background: rgba(0,0,0,0.3);
-      border-radius: 99px; overflow: hidden;
-    }
-    .liar-progress-bar-fill {
-      height: 100%; background: var(--yellow);
-      border-radius: 99px; transition: width 0.3s ease;
-    }
-
-    /* Answers list (voting screen host) */
-    .liar-host-answers {
-      display: flex; flex-direction: column; gap: 0.8rem;
-      flex: 1; overflow-y: auto;
-    }
-    .liar-host-answer-card {
-      background: var(--white); border: var(--border);
-      border-radius: var(--radius); padding: 1rem 1.2rem;
-      box-shadow: 4px 4px 0 var(--black);
-      font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--black);
-    }
-
-    /* Reveal answers (host) */
-    .liar-host-reveal-card {
-      background: var(--white); border: var(--border);
-      border-radius: var(--radius); padding: 1rem 1.2rem;
-      box-shadow: 4px 4px 0 var(--black);
-      display: flex; flex-direction: column; gap: 0.3rem;
-    }
-    .liar-host-reveal-card.truth {
-      background: #dcfce7; border-color: #16a34a;
-      box-shadow: 4px 4px 0 #16a34a;
-    }
-    .liar-host-reveal-answer { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--black); }
-    .liar-host-reveal-meta { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: var(--purple); }
-    .liar-truth-tag { display: inline-block; background: #16a34a; color: var(--white); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; padding: 0.1rem 0.5rem; border-radius: 99px; margin-bottom: 0.2rem; }
-    .liar-votes-on-card { font-size: 0.8rem; font-weight: 900; color: #6b7280; margin-top: 0.2rem; }
-
-    /* Action button */
-    .liar-host-footer {
-      padding: clamp(1rem, 2vh, 1.5rem) clamp(1.5rem, 3vw, 3rem);
-      border-top: var(--border); background: rgba(0,0,0,0.15);
-      flex-shrink: 0;
-    }
-    .btn-liar-action {
-      width: 100%; padding: 1rem 2rem;
-      border: var(--border); font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem; cursor: pointer;
-      box-shadow: 5px 5px 0 var(--black); transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .btn-liar-action:hover  { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
-    .btn-liar-action:active { transform: translate(3px,3px);   box-shadow: 2px 2px 0 var(--black); }
-    .btn-liar-reveal  { background: var(--yellow); color: var(--black); }
-    .btn-liar-next    { background: var(--green);  color: var(--white); }
-    .btn-liar-results { background: var(--purple); color: var(--white); border-color: var(--white); }
   </style>
 </head>
 <body>
@@ -389,7 +223,7 @@
   </div>
 
   <!-- ══════════════════════════════════════════════
-       SCREEN 3: QUESTION (AI TRIVIA)
+       SCREEN 3: QUESTION
   ══════════════════════════════════════════════ -->
   <div class="screen question-screen" id="screen-question">
     <div class="question-header">
@@ -444,150 +278,8 @@
   </div>
 
   <!-- ══════════════════════════════════════════════
-       SCREEN 6: LIAR GAME — FASE DE ESCRITURA
+       MODAL SETTINGS
   ══════════════════════════════════════════════ -->
-  <div class="screen liar-screen" id="screen-liar-write">
-    <div class="liar-host-header">
-      <div class="liar-host-title">🎭 Liar Game</div>
-      <div class="liar-round-pill" id="liar-host-write-round">ROUND 1 / 4</div>
-    </div>
-
-    <div class="liar-host-layout">
-      <!-- Panel izquierdo: pregunta y sujeto -->
-      <div class="liar-main-panel">
-        <div class="liar-subject-badge">
-          <div class="liar-subject-emoji" id="liar-host-subject-emoji">🐙</div>
-          <div class="liar-subject-info">
-            <span class="liar-subject-tag">This round's subject</span>
-            <span class="liar-subject-name" id="liar-host-subject-name">DIEGO</span>
-          </div>
-        </div>
-
-        <div class="liar-host-question-card">
-          <div class="liar-host-q-label">The question</div>
-          <div class="liar-host-q-text" id="liar-host-write-question">...</div>
-        </div>
-
-        <div>
-          <div class="liar-timer-wrap">
-            <div class="liar-timer-fill" id="liar-host-write-bar" style="width:100%"></div>
-          </div>
-          <div class="liar-timer-label" id="liar-host-write-timer">60s remaining</div>
-        </div>
-      </div>
-
-      <!-- Panel derecho: contador de respuestas -->
-      <div class="liar-side-panel">
-        <div class="liar-progress-card">
-          <div class="liar-progress-label">Answers submitted</div>
-          <div class="liar-progress-count" id="liar-host-write-count">0 / 0</div>
-          <div class="liar-progress-bar-wrap">
-            <div class="liar-progress-bar-fill" id="liar-host-write-progress" style="width:0%"></div>
-          </div>
-        </div>
-
-        <div style="color:rgba(255,255,255,0.6);font-size:0.9rem;font-weight:800;text-align:center;line-height:1.4;">
-          Players are writing their answers...<br/>The subject writes the truth, liars write convincing fakes!
-        </div>
-      </div>
-    </div>
-
-    <div class="liar-host-footer">
-      <button class="btn-liar-action btn-liar-reveal" onclick="hostForceReveal()">
-        Skip to Voting →
-      </button>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════
-       SCREEN 7: LIAR GAME — FASE DE VOTACIÓN
-  ══════════════════════════════════════════════ -->
-  <div class="screen liar-screen" id="screen-liar-vote">
-    <div class="liar-host-header">
-      <div class="liar-host-title">🗳️ Vote Now!</div>
-      <div class="liar-round-pill" id="liar-host-vote-round">ROUND 1 / 4</div>
-    </div>
-
-    <div class="liar-host-layout">
-      <!-- Panel izquierdo: respuestas visibles para todos -->
-      <div class="liar-main-panel">
-        <div class="liar-host-question-card">
-          <div class="liar-host-q-label" id="liar-host-vote-subject-label">What did DIEGO answer?</div>
-          <div class="liar-host-q-text" id="liar-host-vote-question">...</div>
-        </div>
-
-        <div class="liar-host-answers" id="liar-host-answers-list">
-          <!-- populated dynamically -->
-        </div>
-      </div>
-
-      <!-- Panel derecho: contador de votos -->
-      <div class="liar-side-panel">
-        <div>
-          <div class="liar-timer-wrap">
-            <div class="liar-timer-fill" id="liar-host-vote-bar" style="width:100%"></div>
-          </div>
-          <div class="liar-timer-label" id="liar-host-vote-timer">30s remaining</div>
-        </div>
-
-        <div class="liar-progress-card">
-          <div class="liar-progress-label">Votes received</div>
-          <div class="liar-progress-count" id="liar-host-vote-count">0 / 0</div>
-          <div class="liar-progress-bar-wrap">
-            <div class="liar-progress-bar-fill" id="liar-host-vote-progress" style="width:0%"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="liar-host-footer">
-      <button class="btn-liar-action btn-liar-reveal" onclick="hostForceReveal()">
-        Reveal Answers →
-      </button>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════════
-       SCREEN 8: LIAR GAME — REVEAL
-  ══════════════════════════════════════════════ -->
-  <div class="screen liar-screen" id="screen-liar-reveal">
-    <div class="liar-host-header">
-      <div class="liar-host-title">🔍 The Truth Revealed!</div>
-      <div class="liar-round-pill" id="liar-host-reveal-round">ROUND 1 / 4</div>
-    </div>
-
-    <div class="liar-host-layout">
-      <!-- Panel izquierdo: respuestas reveladas -->
-      <div class="liar-main-panel">
-        <div class="liar-host-question-card">
-          <div class="liar-host-q-label" id="liar-host-reveal-subject-label">DIEGO's real answer</div>
-          <div class="liar-host-q-text" id="liar-host-reveal-question">...</div>
-        </div>
-
-        <div class="liar-host-answers" id="liar-host-reveal-list">
-          <!-- populated dynamically -->
-        </div>
-      </div>
-
-      <!-- Panel derecho: leaderboard actualizado -->
-      <div class="liar-side-panel">
-        <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;">
-          Scores
-        </div>
-        <div id="liar-host-reveal-scores" style="display:flex;flex-direction:column;gap:0.6rem;overflow-y:auto;">
-          <!-- populated dynamically -->
-        </div>
-      </div>
-    </div>
-
-    <div class="liar-host-footer">
-      <button class="btn-liar-action btn-liar-next" id="liar-host-reveal-btn" onclick="liarNextRound()">
-        Next Round →
-      </button>
-    </div>
-  </div>
-
-  <!-- ══ MODAL SETTINGS ══ -->
   <div class="modal-overlay" id="modal" onclick="handleOverlay(event)">
     <div class="modal">
       <div class="modal-header">
@@ -627,18 +319,16 @@
   <script src="/js/wsClient.js"></script>
   <script>
     // ── Estado local ──────────────────────────────────────────────────────────
-    let selectedType  = 'ai_trivia';
-    let totalPlayers  = 0;
+    let selectedType = 'ai_trivia';
+    let totalPlayers = 0;
+    let timerInterval = null;
     let currentCorrect = -1;
-    let timeLimit      = 15;
-    let liarWriteTimeLimit = 60;
-    let liarVoteTimeLimit  = 30;
-    let liarIsLastRound    = false;
+    let timeLimit = 15;
 
     const AVATARS = ['🐙','🦊','🐸','🦁','🐼','🦄','🐯','🐧','🦋','🐻'];
     const COLORS  = ['bg-blue','bg-yellow','bg-red','bg-green','bg-pink','bg-orange'];
 
-    // ── Navegación ────────────────────────────────────────────────────────────
+    // ── Navegación entre screens ──────────────────────────────────────────────
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -674,7 +364,7 @@
 
       grid.innerHTML = players.map((p, i) => `
         <div class="player-chip">
-          <div class="player-avatar ${COLORS[i % COLORS.length]}">${p.avatar || AVATARS[i % AVATARS.length]}</div>
+          <div class="player-avatar ${COLORS[i % COLORS.length]}">${AVATARS[i % AVATARS.length]}</div>
           <div class="player-name">${p.name}</div>
         </div>`).join('');
     }
@@ -721,14 +411,14 @@
     });
 
     function animateLoadingBar() {
-      const bar    = document.getElementById('loading-bar');
+      const bar = document.getElementById('loading-bar');
       const status = document.getElementById('loading-status');
-      const steps  = ['Connecting...', 'Setting up room...', 'Generating questions...', 'Almost ready!'];
+      const steps = ['Connecting...', 'Setting up room...', 'Generating questions...', 'Almost ready!'];
       let progress = 0, stepIndex = 0;
 
       const iv = setInterval(() => {
         progress += Math.random() * 12;
-        if (progress >= 90) { progress = 90; clearInterval(iv); }
+        if (progress >= 90) { progress = 90; clearInterval(iv); } // se queda en 90 hasta GAME_READY
         bar.style.width = progress + '%';
         const nextStep = Math.floor(progress / (100 / steps.length));
         if (nextStep > stepIndex && nextStep < steps.length) {
@@ -739,12 +429,15 @@
     }
 
     ws.on('GAME_READY', () => {
+      // Completar la barra y esperar un momento antes de mostrar el botón
       document.getElementById('loading-bar').style.width = '100%';
       document.getElementById('loading-status').textContent = 'Ready!';
-      setTimeout(() => { ws.send('NEXT_QUESTION'); }, 1000);
+      setTimeout(() => {
+        ws.send('NEXT_QUESTION');
+      }, 1000);
     });
 
-    // ── AI Trivia: Question ───────────────────────────────────────────────────
+    // ── Question ──────────────────────────────────────────────────────────────
     ws.on('QUESTION', ({ questionIndex, totalQuestions, question, options, correct, timeLimit: tl }) => {
       currentCorrect = correct;
       timeLimit = tl || 15;
@@ -754,15 +447,17 @@
       document.getElementById('responses-badge').textContent = `RESPONSES: 0/${totalPlayers}`;
       document.getElementById('btn-reveal').style.display = 'block';
 
-      const labels  = ['A','B','C','D'];
+      // Render options
+      const labels = ['A','B','C','D'];
       const classes = ['opt-a','opt-b','opt-c','opt-d'];
-      const grid    = document.getElementById('options-grid');
+      const grid = document.getElementById('options-grid');
       grid.innerHTML = options.map((opt, i) => `
         <div class="option-btn ${classes[i]}">
           <span class="option-label">${labels[i]}</span>
           <span>${opt}</span>
         </div>`).join('');
 
+      // Timer
       startTimer(timeLimit);
       showScreen('screen-question');
     });
@@ -781,20 +476,22 @@
       document.getElementById('timer-bar').style.width = '100%';
     }
 
-    function revealAnswer() { ws.send('REVEAL_ANSWER'); }
+    function revealAnswer() {
+      ws.send('REVEAL_ANSWER');
+    }
 
     ws.on('ANSWER_REVEALED', ({ correct, correctText }) => {
       document.getElementById('btn-reveal').style.display = 'none';
-      const btns = document.querySelectorAll('#options-grid .option-btn');
+      const btns = document.querySelectorAll('.option-btn');
       btns.forEach((btn, i) => {
         if (i === correct) btn.classList.add('correct');
         else btn.classList.add('wrong');
       });
     });
 
-    // ── AI Trivia: Leaderboard ────────────────────────────────────────────────
+    // ── Leaderboard ───────────────────────────────────────────────────────────
     ws.on('LEADERBOARD', ({ leaderboard }) => {
-      const rankLabels  = ['🥇','🥈','🥉'];
+      const rankLabels = ['🥇','🥈','🥉'];
       const rankClasses = ['gold','silver','bronze'];
 
       document.getElementById('leaderboard-list').innerHTML = leaderboard.map((p, i) => `
@@ -810,15 +507,18 @@
       showScreen('screen-leaderboard');
     });
 
-    function nextQuestion() { ws.send('NEXT_QUESTION'); }
+    function nextQuestion() {
+      ws.send('NEXT_QUESTION');
+    }
 
     // ── Game Over ─────────────────────────────────────────────────────────────
     ws.on('GAME_OVER', ({ winner, leaderboard }) => {
-      document.getElementById('winner-title').textContent  = `🎉 ${winner.name} is the Winner!`;
-      document.getElementById('winner-name').textContent   = winner.name;
-      document.getElementById('winner-score').textContent  = `${winner.score} pts`;
-      document.getElementById('winner-quote').textContent  = winner.victoryQuote ? `"${winner.victoryQuote}"` : '';
+      document.getElementById('winner-title').textContent = `🎉 ${winner.name} is the Winner!`;
+      document.getElementById('winner-name').textContent = winner.name;
+      document.getElementById('winner-score').textContent = `${winner.score} pts`;
+      document.getElementById('winner-quote').textContent = winner.victoryQuote ? `"${winner.victoryQuote}"` : '';
 
+      // Podio (2do y 3ro)
       document.getElementById('winner-podium').innerHTML = leaderboard.slice(1, 3).map((p, i) => `
         <div class="podium-item">
           ${i === 0 ? '🥈' : '🥉'} ${p.name}<br>${p.score} pts
@@ -827,143 +527,18 @@
       showScreen('screen-winner');
     });
 
+    // ── Errores ───────────────────────────────────────────────────────────────
     ws.on('ERROR', ({ message }) => alert(message));
 
-    function goHome()    { sessionStorage.clear(); window.location.href = '/'; }
-    function playAgain() { sessionStorage.removeItem('roomCode'); window.location.href = '/'; }
+    // ── Winner actions ────────────────────────────────────────────────────────
+    function goHome() {
+      sessionStorage.clear();
+      window.location.href = '/';
+    }
 
-    // ══════════════════════════════════════════════════════════════════════
-    // LIAR GAME
-    // ══════════════════════════════════════════════════════════════════════
-
-    // ── LIAR_ROUND_START → pantalla de escritura del host ─────────────────
-    ws.on('LIAR_ROUND_START', ({ round, totalRounds, subjectName, question, writingTime }) => {
-      liarWriteTimeLimit = writingTime || 60;
-      liarIsLastRound    = round >= totalRounds;
-
-      document.getElementById('liar-host-write-round').textContent    = `ROUND ${round} / ${totalRounds}`;
-      document.getElementById('liar-host-subject-name').textContent   = subjectName.toUpperCase();
-      document.getElementById('liar-host-write-question').textContent = question;
-      document.getElementById('liar-host-write-bar').style.width      = '100%';
-      document.getElementById('liar-host-write-bar').classList.remove('urgent');
-      document.getElementById('liar-host-write-timer').textContent    = `${writingTime}s remaining`;
-      document.getElementById('liar-host-write-count').textContent    = `0 / ${totalPlayers}`;
-      document.getElementById('liar-host-write-progress').style.width = '0%';
-
-      showScreen('screen-liar-write');
-    });
-
-    // ── LIAR_WRITING_PROGRESS → actualizar contador host ──────────────────
-    ws.on('LIAR_WRITING_PROGRESS', ({ answered, total }) => {
-      document.getElementById('liar-host-write-count').textContent    = `${answered} / ${total}`;
-      document.getElementById('liar-host-write-progress').style.width = `${(answered / total) * 100}%`;
-    });
-
-    // ── LIAR_VOTING_START → pantalla de votación del host ─────────────────
-    ws.on('LIAR_VOTING_START', ({ question, subjectName, answers, votingTime }) => {
-      liarVoteTimeLimit = votingTime || 30;
-
-      const roundText = document.getElementById('liar-host-write-round').textContent;
-      document.getElementById('liar-host-vote-round').textContent         = roundText;
-      document.getElementById('liar-host-vote-subject-label').textContent = `What did ${subjectName} answer?`;
-      document.getElementById('liar-host-vote-question').textContent      = question;
-      document.getElementById('liar-host-vote-bar').style.width           = '100%';
-      document.getElementById('liar-host-vote-bar').classList.remove('urgent');
-      document.getElementById('liar-host-vote-timer').textContent         = `${votingTime}s remaining`;
-
-      const eligibleVoters = totalPlayers - 1; // sujeto no vota
-      document.getElementById('liar-host-vote-count').textContent    = `0 / ${eligibleVoters}`;
-      document.getElementById('liar-host-vote-progress').style.width = '0%';
-
-      // Mostrar respuestas mezcladas (sin revelar dueños)
-      document.getElementById('liar-host-answers-list').innerHTML = answers.map(({ text }) => `
-        <div class="liar-host-answer-card">${text}</div>
-      `).join('');
-
-      showScreen('screen-liar-vote');
-    });
-
-    // ── LIAR_VOTING_PROGRESS → actualizar contador votos ──────────────────
-    ws.on('LIAR_VOTING_PROGRESS', ({ voted, total }) => {
-      document.getElementById('liar-host-vote-count').textContent    = `${voted} / ${total}`;
-      document.getElementById('liar-host-vote-progress').style.width = `${(voted / total) * 100}%`;
-    });
-
-    // ── Timer compartido para fases liar ──────────────────────────────────
-    ws.on('LIAR_TIMER', ({ phase, remaining }) => {
-      if (phase === 'writing') {
-        const pct = (remaining / liarWriteTimeLimit) * 100;
-        document.getElementById('liar-host-write-bar').style.width  = pct + '%';
-        document.getElementById('liar-host-write-timer').textContent = `${remaining}s remaining`;
-        if (remaining <= 10) document.getElementById('liar-host-write-bar').classList.add('urgent');
-      } else if (phase === 'voting') {
-        const pct = (remaining / liarVoteTimeLimit) * 100;
-        document.getElementById('liar-host-vote-bar').style.width  = pct + '%';
-        document.getElementById('liar-host-vote-timer').textContent = `${remaining}s remaining`;
-        if (remaining <= 10) document.getElementById('liar-host-vote-bar').classList.add('urgent');
-      }
-    });
-
-    // ── Host: force reveal / skip ──────────────────────────────────────────
-    function hostForceReveal() { ws.send('FORCE_REVEAL'); }
-
-    // ── LIAR_ROUND_REVEAL → pantalla de reveal del host ───────────────────
-    ws.on('LIAR_ROUND_REVEAL', ({ question, subjectName, answers, votes, pointsLog, leaderboard, round, totalRounds, isLastRound }) => {
-      liarIsLastRound = isLastRound;
-
-      document.getElementById('liar-host-reveal-round').textContent        = `ROUND ${round} / ${totalRounds}`;
-      document.getElementById('liar-host-reveal-subject-label').textContent = `${subjectName}'s real answer`;
-      document.getElementById('liar-host-reveal-question').textContent     = question;
-
-      // Contar cuántos votos recibió cada respuesta
-      const voteCounts = {};
-      Object.values(votes).forEach(targetId => {
-        voteCounts[targetId] = (voteCounts[targetId] || 0) + 1;
-      });
-
-      // Renderizar respuestas reveladas con dueño y votos
-      document.getElementById('liar-host-reveal-list').innerHTML = answers.map(({ ownerId, ownerName, text, isTrue }) => {
-        const voteCount = voteCounts[ownerId] || 0;
-        const truthTag  = isTrue ? `<span class="liar-truth-tag">✓ TRUTH</span>` : '';
-        const votesText = voteCount > 0
-          ? `<div class="liar-votes-on-card">← ${voteCount} vote${voteCount > 1 ? 's' : ''}</div>`
-          : '';
-        return `
-          <div class="liar-host-reveal-card ${isTrue ? 'truth' : ''}">
-            ${truthTag}
-            <div class="liar-host-reveal-answer">${text}</div>
-            <div class="liar-host-reveal-meta">${ownerName}</div>
-            ${votesText}
-          </div>
-        `;
-      }).join('');
-
-      // Renderizar scores actualizados en panel derecho
-      const rankLabels = ['🥇','🥈','🥉'];
-      document.getElementById('liar-host-reveal-scores').innerHTML = leaderboard.map((p, i) => `
-        <div style="display:flex;align-items:center;gap:0.8rem;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:8px;padding:0.6rem 0.8rem;">
-          <span style="font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--yellow)">${rankLabels[i] || i+1}</span>
-          <span style="font-family:'Fredoka One',cursive;font-size:1rem;color:var(--white);flex:1;text-transform:uppercase">${p.name}</span>
-          <span style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--yellow)">${p.score}${p.lastPoints > 0 ? ` <span style="font-size:0.75rem;color:#86efac">+${p.lastPoints}</span>` : ''}</span>
-        </div>
-      `).join('');
-
-      // Cambiar botón si es la última ronda
-      const btn = document.getElementById('liar-host-reveal-btn');
-      if (isLastRound) {
-        btn.textContent = 'See Final Results 🏆';
-        btn.className   = 'btn-liar-action btn-liar-results';
-      } else {
-        btn.textContent = 'Next Round →';
-        btn.className   = 'btn-liar-action btn-liar-next';
-      }
-
-      showScreen('screen-liar-reveal');
-    });
-
-    // ── Avanzar ronda o terminar juego ────────────────────────────────────
-    function liarNextRound() {
-      ws.send('NEXT_QUESTION'); // reutiliza el mismo evento que usa aiTrivia para avanzar
+    function playAgain() {
+      sessionStorage.removeItem('roomCode');
+      window.location.href = '/';
     }
   </script>
 </body>
