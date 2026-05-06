@@ -80,12 +80,12 @@ function addPlayer(room, socket, name, victoryQuote, avatar) {
 function removePlayer(room, socketId) {
   delete room.players[socketId];
 }
-
 function getPlayerList(room) {
-  return Object.values(room.players).map((p) => ({
-    id: Object.keys(room.players).find((k) => room.players[k] === p),
+  return Object.entries(room.players).map(([id, p]) => ({
+    id,
     name: p.name,
     score: p.score,
+    avatar: p.avatar || null,
   }));
 }
 

@@ -202,8 +202,8 @@ function handleRejoinRoom(socket, { code, name, role }) {
       JSON.stringify({
         type: "REJOINED_OK",
         payload: { code: room.code, role: "host", state: room.state },
-      }),
-    );
+      }));
+      return;
   }
 
   // Find player by name (best effort reconnect)

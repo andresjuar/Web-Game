@@ -1168,7 +1168,7 @@
         "🦄",
         "🐯",
         "🐧",
-        "🦋",
+        "🦆",
         "🐻",
         "🐨",
         "🦅",
@@ -1216,25 +1216,16 @@
       });
 
       // ── Setup: JOIN_ROOM ────────────────────────────────────────────────────────
-      document.getElementById("btn-ready").addEventListener("click", () => {
-        const name = document.getElementById("playerName").value.trim();
-        const avatar = document.getElementById("avatar-display") ? document.getElementById("avatar-display"): "🐙";
-        const victoryQuote = document
-          .getElementById("victoryQuote")
-          .value.trim();
-        const code = sessionStorage.getItem("roomCode");
+     document.getElementById("btn-ready").addEventListener("click", () => {
+  const name = document.getElementById("playerName").value.trim();
+  const victoryQuote = document.getElementById("victoryQuote").value.trim();
+  const code = sessionStorage.getItem("roomCode");
 
-        if (!name) {
-          alert("Please enter your name.");
-          return;
-        }
-        if (!code) {
-          alert("No room code found. Go back and enter the code.");
-          return;
-        }
+  if (!name) { alert("Please enter your name."); return; }
+  if (!code)  { alert("No room code found."); return; }
 
-        ws.send("JOIN_ROOM", { code, name, victoryQuote, avatar });
-      });
+  ws.send("JOIN_ROOM", { code, name, victoryQuote, avatar: selectedAvatar }); 
+});
 
       ws.on("JOINED_OK", ({ code, name }) => {
         sessionStorage.setItem("playerName", name);
