@@ -30,7 +30,7 @@ server.listen(PORT, () => {
   console.log(`RicoQuiz running on http://localhost:${PORT}`);
 });
 
-console.log("Sirviendo static desde:", path.join(__dirname, "../FRONTEND/views"));
+//console.log("Sirviendo static desde:", path.join(__dirname, "../FRONTEND/views"));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../FRONTEND/views/index.html"));
 });
