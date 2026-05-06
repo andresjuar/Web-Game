@@ -36,26 +36,15 @@
         overflow: hidden;
       }
 
-      /* ── Cada screen ocupa todo el viewport, oculta por defecto ── */
-      .screen {
-        display: none;
-        height: 100vh;
-        flex-direction: column;
-      }
-      .screen.active {
-        display: flex;
-      }
-      .screen.centered {
-        align-items: center;
-        justify-content: center;
-        background-color: var(--purple);
-        background-image: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.07) 1.5px,
-          transparent 1.5px
-        );
-        background-size: 30px 30px;
-      }
+    /* ── Cada screen ocupa todo el viewport, oculta por defecto ── */
+    .screen { display: none; height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
+    .screen.centered {
+      align-items: center; justify-content: center;
+      background-color: var(--purple);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+      background-size: 30px 30px;
+    }
 
       /* ════════ LOBBY ════════ */
       .top-half {
@@ -787,102 +776,24 @@
         box-shadow: 7px 7px 0 var(--black);
       }
 
-      /* ════════ WINNER ════════ */
-      .winner-screen {
-        background: var(--purple);
-        background-image: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.07) 1.5px,
-          transparent 1.5px
-        );
-        background-size: 30px 30px;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        padding: 2rem;
-      }
-      .winner-title {
-        font-family: "Fredoka One", cursive;
-        font-size: clamp(2rem, 6vh, 3.5rem);
-        color: var(--yellow);
-        text-shadow: 6px 6px 0 var(--black);
-        text-align: center;
-        text-transform: uppercase;
-      }
-      .winner-card {
-        background: var(--white);
-        border: var(--border);
-        padding: 2rem 3rem;
-        box-shadow: 8px 8px 0 var(--black);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        border-radius: var(--radius);
-      }
-      .winner-avatar {
-        font-size: 4rem;
-      }
-      .winner-name {
-        font-family: "Fredoka One", cursive;
-        font-size: 2.5rem;
-        color: var(--purple);
-        text-transform: uppercase;
-      }
-      .winner-score {
-        font-family: "Fredoka One", cursive;
-        font-size: 1.5rem;
-        color: var(--black);
-      }
-      .winner-quote {
-        font-size: 1rem;
-        font-weight: 800;
-        color: var(--black);
-        font-style: italic;
-        text-align: center;
-      }
-      .winner-podium {
-        display: flex;
-        gap: 1rem;
-      }
-      .podium-item {
-        background: rgba(255, 255, 255, 0.15);
-        border: var(--border);
-        padding: 0.5rem 1rem;
-        font-family: "Fredoka One", cursive;
-        color: var(--white);
-        text-align: center;
-        border-radius: var(--radius);
-        font-size: 0.95rem;
-      }
-      .winner-actions {
-        display: flex;
-        gap: 1rem;
-      }
-      .btn-home {
-        background: var(--white);
-        border: var(--border);
-        font-family: "Fredoka One", cursive;
-        font-size: 1.1rem;
-        padding: 0.8rem 2rem;
-        cursor: pointer;
-        box-shadow: 4px 4px 0 var(--black);
-        color: var(--black);
-      }
-      .btn-play-again {
-        background: var(--yellow);
-        border: var(--border);
-        font-family: "Fredoka One", cursive;
-        font-size: 1.1rem;
-        padding: 0.8rem 2rem;
-        cursor: pointer;
-        box-shadow: 4px 4px 0 var(--black);
-        color: var(--black);
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ══════════════════════════════════════════════
+    /* ════════ WINNER ════════ */
+    .winner-screen { background: var(--purple); background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px); background-size: 30px 30px; align-items: center; justify-content: center; gap: 2rem; padding: 2rem; }
+    .winner-title { font-family: 'Fredoka One',cursive; font-size: clamp(2rem,6vh,3.5rem); color: var(--yellow); text-shadow: 6px 6px 0 var(--black); text-align: center; text-transform: uppercase; }
+    .winner-card { background: var(--white); border: var(--border); padding: 2rem 3rem; box-shadow: 8px 8px 0 var(--black); display: flex; flex-direction: column; align-items: center; gap: 1rem; border-radius: var(--radius); }
+    .winner-avatar { font-size: 4rem; }
+    .winner-name { font-family: 'Fredoka One',cursive; font-size: 2.5rem; color: var(--purple); text-transform: uppercase; }
+    .winner-score { font-family: 'Fredoka One',cursive; font-size: 1.5rem; color: var(--black); }
+    .winner-quote { font-size: 1rem; font-weight: 800; color: var(--black); font-style: italic; text-align: center; }
+    .winner-podium { display: flex; gap: 1rem; }
+    .podium-item { background: rgba(255,255,255,0.15); border: var(--border); padding: 0.5rem 1rem; font-family: 'Fredoka One',cursive; color: var(--white); text-align: center; border-radius: var(--radius); font-size: 0.95rem; }
+    .winner-actions { display: flex; gap: 1rem; }
+    .btn-home { background: var(--white); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
+    .btn-play-again { background: var(--yellow); border: var(--border); font-family: 'Fredoka One',cursive; font-size: 1.1rem; padding: 0.8rem 2rem; cursor: pointer; box-shadow: 4px 4px 0 var(--black); color: var(--black); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
        SCREEN 1: LOBBY
   ══════════════════════════════════════════════ -->
     <div class="screen active" id="screen-lobby">
@@ -941,7 +852,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════════
        SCREEN 3: QUESTION
   ══════════════════════════════════════════════ -->
     <div class="screen question-screen" id="screen-question">
@@ -1012,63 +923,53 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════════
        MODAL SETTINGS
   ══════════════════════════════════════════════ -->
-    <div class="modal-overlay" id="modal" onclick="handleOverlay(event)">
-      <div class="modal">
-        <div class="modal-header">
-          <span class="modal-title">SETTINGS</span>
-          <button class="modal-close" onclick="closeModal()">✕</button>
-        </div>
-        <div>
-          <p class="modal-section">GAME TYPE</p>
-          <div class="game-types">
-            <div
-              class="game-type selected"
-              onclick="selectType(this, 'ai_trivia')"
-            >
-              <div>🧠</div>
-              <div>AI TRIVIA</div>
-            </div>
-            <div class="game-type" onclick="selectType(this, 'liar_game')">
-              <div>🎭</div>
-              <div>LIAR GAME</div>
-            </div>
+  <div class="modal-overlay" id="modal" onclick="handleOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">SETTINGS</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div>
+        <p class="modal-section">GAME TYPE</p>
+        <div class="game-types">
+          <div class="game-type selected" onclick="selectType(this,'ai_trivia')">
+            <div>🧠</div><div>AI TRIVIA</div>
           </div>
-        </div>
-        <div id="topic-section">
-          <p class="modal-section">TOPIC (FOR AI)</p>
-          <input
-            class="modal-input"
-            id="topic-input"
-            type="text"
-            placeholder="e.g. History, Sports..."
-          />
-        </div>
-        <div>
-          <p class="modal-section">NUMBER OF QUESTIONS</p>
-          <div class="num-controls">
-            <button class="num-btn" onclick="changeNum(-1)">−</button>
-            <div class="num-display" id="numVal">8</div>
-            <button class="num-btn" onclick="changeNum(1)">+</button>
+          <div class="game-type" onclick="selectType(this,'liar_game')">
+            <div>🎭</div><div>LIAR GAME</div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
-          <button class="btn-save" onclick="saveSettings()">SAVE</button>
         </div>
       </div>
+      <div id="topic-section">
+        <p class="modal-section">TOPIC (FOR AI)</p>
+        <input class="modal-input" id="topic-input" type="text" placeholder="e.g. History, Sports..."/>
+      </div>
+      <div>
+        <p class="modal-section">NUMBER OF QUESTIONS</p>
+        <div class="num-controls">
+          <button class="num-btn" onclick="changeNum(-1)">−</button>
+          <div class="num-display" id="numVal">8</div>
+          <button class="num-btn" onclick="changeNum(1)">+</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
+        <button class="btn-save" onclick="saveSettings()">SAVE</button>
+      </div>
     </div>
+  </div>
 
-    <script src="/js/wsClient.js"></script>
-    <script>
-      // ── Estado local ──────────────────────────────────────────────────────────
-      let selectedType = "ai_trivia";
-      let totalPlayers = 0;
-      let timerInterval = null;
-      let currentCorrect = -1;
-      let timeLimit = 15;
+  <script src="/js/wsClient.js"></script>
+  <script>
+    // ── Estado local ──────────────────────────────────────────────────────────
+    let selectedType = 'ai_trivia';
+    let totalPlayers = 0;
+    let timerInterval = null;
+    let currentCorrect = -1;
+    let timeLimit = 15;
 
       const AVATARS = [
         "🐙",
@@ -1091,13 +992,11 @@
         "bg-orange",
       ];
 
-      // ── Navegación entre screens ──────────────────────────────────────────────
-      function showScreen(id) {
-        document
-          .querySelectorAll(".screen")
-          .forEach((s) => s.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-      }
+    // ── Navegación entre screens ──────────────────────────────────────────────
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
 
       // ── Lobby ─────────────────────────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", () => {
@@ -1133,7 +1032,7 @@
           .map(
             (p, i) => `
         <div class="player-chip">
-          <div class="player-avatar ${COLORS[i % COLORS.length]}">${AVATARS[i % AVATARS.length]}</div>
+          <div class="player-avatar ${COLORS[i % COLORS.length]}">${p.avatar || AVATARS[i % AVATARS.length]}</div>
           <div class="player-name">${p.name}</div>
         </div>`,
           )
@@ -1201,55 +1100,37 @@
         animateLoadingBar();
       });
 
-      function animateLoadingBar() {
-        const bar = document.getElementById("loading-bar");
-        const status = document.getElementById("loading-status");
-        const steps = [
-          "Connecting...",
-          "Setting up room...",
-          "Generating questions...",
-          "Almost ready!",
-        ];
-        let progress = 0,
-          stepIndex = 0;
+    function animateLoadingBar() {
+      const bar = document.getElementById('loading-bar');
+      const status = document.getElementById('loading-status');
+      const steps = ['Connecting...', 'Setting up room...', 'Generating questions...', 'Almost ready!'];
+      let progress = 0, stepIndex = 0;
 
-        const iv = setInterval(() => {
-          progress += Math.random() * 12;
-          if (progress >= 90) {
-            progress = 90;
-            clearInterval(iv);
-          } // se queda en 90 hasta GAME_READY
-          bar.style.width = progress + "%";
-          const nextStep = Math.floor(progress / (100 / steps.length));
-          if (nextStep > stepIndex && nextStep < steps.length) {
-            stepIndex = nextStep;
-            status.textContent = steps[stepIndex];
-          }
-        }, 500);
-      }
+      const iv = setInterval(() => {
+        progress += Math.random() * 12;
+        if (progress >= 90) { progress = 90; clearInterval(iv); } // se queda en 90 hasta GAME_READY
+        bar.style.width = progress + '%';
+        const nextStep = Math.floor(progress / (100 / steps.length));
+        if (nextStep > stepIndex && nextStep < steps.length) {
+          stepIndex = nextStep;
+          status.textContent = steps[stepIndex];
+        }
+      }, 500);
+    }
 
-      ws.on("GAME_READY", () => {
-        // Completar la barra y esperar un momento antes de mostrar el botón
-        document.getElementById("loading-bar").style.width = "100%";
-        document.getElementById("loading-status").textContent = "Ready!";
-        setTimeout(() => {
-          ws.send("NEXT_QUESTION");
-        }, 1000);
-      });
+    ws.on('GAME_READY', () => {
+      // Completar la barra y esperar un momento antes de mostrar el botón
+      document.getElementById('loading-bar').style.width = '100%';
+      document.getElementById('loading-status').textContent = 'Ready!';
+      setTimeout(() => {
+        ws.send('NEXT_QUESTION');
+      }, 1000);
+    });
 
-      // ── Question ──────────────────────────────────────────────────────────────
-      ws.on(
-        "QUESTION",
-        ({
-          questionIndex,
-          totalQuestions,
-          question,
-          options,
-          correct,
-          timeLimit: tl,
-        }) => {
-          currentCorrect = correct;
-          timeLimit = tl || 15;
+    // ── Question ──────────────────────────────────────────────────────────────
+    ws.on('QUESTION', ({ questionIndex, totalQuestions, question, options, correct, timeLimit: tl }) => {
+      currentCorrect = correct;
+      timeLimit = tl || 15;
 
           document.getElementById("q-counter").textContent =
             `QUESTION ${questionIndex + 1} OF ${totalQuestions}`;
@@ -1258,13 +1139,11 @@
             `RESPONSES: 0/${totalPlayers}`;
           document.getElementById("btn-reveal").style.display = "block";
 
-          // Render options
-          const labels = ["A", "B", "C", "D"];
-          const classes = ["opt-a", "opt-b", "opt-c", "opt-d"];
-          const grid = document.getElementById("options-grid");
-          grid.innerHTML = options
-            .map(
-              (opt, i) => `
+      // Render options
+      const labels = ['A','B','C','D'];
+      const classes = ['opt-a','opt-b','opt-c','opt-d'];
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = options.map((opt, i) => `
         <div class="option-btn ${classes[i]}">
           <span class="option-label">${labels[i]}</span>
           <span>${opt}</span>
@@ -1272,11 +1151,10 @@
             )
             .join("");
 
-          // Timer
-          startTimer(timeLimit);
-          showScreen("screen-question");
-        },
-      );
+      // Timer
+      startTimer(timeLimit);
+      showScreen('screen-question');
+    });
 
       ws.on("TIMER_TICK", ({ secondsLeft }) => {
         document.getElementById("q-timer").textContent = secondsLeft;
@@ -1294,23 +1172,23 @@
         document.getElementById("timer-bar").style.width = "100%";
       }
 
-      function revealAnswer() {
-        ws.send("REVEAL_ANSWER");
-      }
+    function revealAnswer() {
+      ws.send('REVEAL_ANSWER');
+    }
 
-      ws.on("ANSWER_REVEALED", ({ correct, correctText }) => {
-        document.getElementById("btn-reveal").style.display = "none";
-        const btns = document.querySelectorAll(".option-btn");
-        btns.forEach((btn, i) => {
-          if (i === correct) btn.classList.add("correct");
-          else btn.classList.add("wrong");
-        });
+    ws.on('ANSWER_REVEALED', ({ correct, correctText }) => {
+      document.getElementById('btn-reveal').style.display = 'none';
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach((btn, i) => {
+        if (i === correct) btn.classList.add('correct');
+        else btn.classList.add('wrong');
       });
+    });
 
-      // ── Leaderboard ───────────────────────────────────────────────────────────
-      ws.on("LEADERBOARD", ({ leaderboard }) => {
-        const rankLabels = ["🥇", "🥈", "🥉"];
-        const rankClasses = ["gold", "silver", "bronze"];
+    // ── Leaderboard ───────────────────────────────────────────────────────────
+    ws.on('LEADERBOARD', ({ leaderboard }) => {
+      const rankLabels = ['🥇','🥈','🥉'];
+      const rankClasses = ['gold','silver','bronze'];
 
         document.getElementById("leaderboard-list").innerHTML = leaderboard
           .map(
@@ -1329,25 +1207,19 @@
         showScreen("screen-leaderboard");
       });
 
-      function nextQuestion() {
-        ws.send("NEXT_QUESTION");
-      }
+    function nextQuestion() {
+      ws.send('NEXT_QUESTION');
+    }
 
-      // ── Game Over ─────────────────────────────────────────────────────────────
-      ws.on("GAME_OVER", ({ winner, leaderboard }) => {
-        document.getElementById("winner-title").textContent =
-          `🎉 ${winner.name} is the Winner!`;
-        document.getElementById("winner-name").textContent = winner.name;
-        document.getElementById("winner-score").textContent =
-          `${winner.score} pts`;
-        document.getElementById("winner-quote").textContent =
-          winner.victoryQuote ? `"${winner.victoryQuote}"` : "";
+    // ── Game Over ─────────────────────────────────────────────────────────────
+    ws.on('GAME_OVER', ({ winner, leaderboard }) => {
+      document.getElementById('winner-title').textContent = `🎉 ${winner.name} is the Winner!`;
+      document.getElementById('winner-name').textContent = winner.name;
+      document.getElementById('winner-score').textContent = `${winner.score} pts`;
+      document.getElementById('winner-quote').textContent = winner.victoryQuote ? `"${winner.victoryQuote}"` : '';
 
-        // Podio (2do y 3ro)
-        document.getElementById("winner-podium").innerHTML = leaderboard
-          .slice(1, 3)
-          .map(
-            (p, i) => `
+      // Podio (2do y 3ro)
+      document.getElementById('winner-podium').innerHTML = leaderboard.slice(1, 3).map((p, i) => `
         <div class="podium-item">
           ${i === 0 ? "🥈" : "🥉"} ${p.name}<br>${p.score} pts
         </div>`,
@@ -1357,19 +1229,19 @@
         showScreen("screen-winner");
       });
 
-      // ── Errores ───────────────────────────────────────────────────────────────
-      ws.on("ERROR", ({ message }) => alert(message));
+    // ── Errores ───────────────────────────────────────────────────────────────
+    ws.on('ERROR', ({ message }) => alert(message));
 
-      // ── Winner actions ────────────────────────────────────────────────────────
-      function goHome() {
-        sessionStorage.clear();
-        window.location.href = "/";
-      }
+    // ── Winner actions ────────────────────────────────────────────────────────
+    function goHome() {
+      sessionStorage.clear();
+      window.location.href = '/';
+    }
 
-      function playAgain() {
-        sessionStorage.removeItem("roomCode");
-        window.location.href = "/";
-      }
-    </script>
-  </body>
+    function playAgain() {
+      sessionStorage.removeItem('roomCode');
+      window.location.href = '/';
+    }
+  </script>
+</body>
 </html>

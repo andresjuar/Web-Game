@@ -13,6 +13,8 @@ const wss = new WebSocketServer({ server });
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../FRONTEND/views")));
 
+app.use('/js', express.static(path.join(__dirname, "../FRONTEND/js")));
+
 // ── REST routes ───────────────────────────────────────────────────────────────
 app.get("/api/rooms/:code/exists", (req, res) => {
   const { rooms } = require("./ws/roomManager");

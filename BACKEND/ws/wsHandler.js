@@ -22,8 +22,8 @@ const {
   sendToPlayer,
 } = require("./roomManager");
 
-const aiTrivia = require("../game/aitrivia");
-//const liarGame = require("./liarGame");
+const aiTrivia = require("../game/aiTrivia");
+const liarGame = require("../game/liarGame");
 
 // Socket identity helpers
 
