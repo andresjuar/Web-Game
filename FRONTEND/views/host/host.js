@@ -443,7 +443,7 @@ ws.on("ERROR", ({ message }) => alert(message));
 // ── Winner actions ────────────────────────────────────────────────────────
 function goHome() {
   sessionStorage.clear();
-  window.location.href = "/host.html";
+  window.location.href = "/";
 }
 
 function playAgain() {
