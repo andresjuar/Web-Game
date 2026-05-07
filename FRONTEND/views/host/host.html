@@ -12,9 +12,10 @@
     <link rel="stylesheet" href="/host/host.css">
   </head>
   <body>
+
     <!-- ══════════════════════════════════════════════
        SCREEN 1: LOBBY
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen active" id="screen-lobby">
       <div class="top-half">
         <div class="code-section">
@@ -31,7 +32,6 @@
           <div class="qr-placeholder"><div class="qr-pattern"></div></div>
         </div>
       </div>
-
       <div class="bottom-half">
         <div>
           <div class="players-title" id="players-title">PLAYERS (0/10)</div>
@@ -55,7 +55,7 @@
 
     <!-- ══════════════════════════════════════════════
        SCREEN 2: LOADING
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen centered" id="screen-loading">
       <div class="loading-container">
         <div class="logo-wrap">
@@ -73,7 +73,7 @@
 
     <!-- ══════════════════════════════════════════════
        SCREEN 3: QUESTION
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen question-screen" id="screen-question">
       <div class="question-header">
         <div class="q-counter" id="q-counter">QUESTION 1 OF 8</div>
@@ -108,43 +108,96 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 4: LEADERBOARD
-  ══════════════════════════════════════════════ -->
-    <div class="screen leaderboard-screen" id="screen-leaderboard">
-      <div class="leaderboard-header">
-        <div class="leaderboard-title">🏆 Scores So Far...</div>
+       SCREEN 4: LEADERBOARD — diseño de capas original
+    ══════════════════════════════════════════════ -->
+    <div class="screen lb-screen" id="screen-leaderboard">
+
+      <div class="lb-header-area">
+        <h1 class="lb-results-title">EVERYONE'S SCORES SO FAR...</h1>
+        <button class="lb-btn-next" onclick="nextQuestion()">Next Round ➔</button>
       </div>
-      <div class="leaderboard-list" id="leaderboard-list"></div>
-      <div class="leaderboard-footer">
-        <button class="btn-next-round" onclick="nextQuestion()">
-          Next Round →
-        </button>
+
+      <div class="lb-stack-area">
+
+        <!-- Capa 1 — 1er lugar -->
+        <div class="lb-layer lb-layer-1">
+          <div class="lb-content-row">
+            <div class="lb-avatar-circle" id="lb-avatar-1">🏆</div>
+            <div class="lb-player-info">
+              <span class="lb-player-tag" id="lb-tag-1"></span>
+              <span class="lb-player-name" id="lb-name-1">-</span>
+            </div>
+            <div class="lb-points" id="lb-points-1">0</div>
+          </div>
+        </div>
+
+        <!-- Capa 2 — 2do lugar -->
+        <div class="lb-layer lb-layer-2">
+          <div class="lb-content-row">
+            <div class="lb-avatar-circle" id="lb-avatar-2">🥈</div>
+            <div class="lb-player-info">
+              <span class="lb-player-tag" id="lb-tag-2"></span>
+              <span class="lb-player-name" id="lb-name-2">-</span>
+            </div>
+            <div class="lb-points" id="lb-points-2">0</div>
+          </div>
+        </div>
+
+        <!-- Capa 3 — 3ro en adelante -->
+        <div class="lb-layer lb-layer-3">
+          <div class="lb-content-row lb-others-header">
+            <span class="lb-player-tag" id="lb-tag-3">Were you guys even playing?</span>
+          </div>
+          <div class="lb-others-grid" id="lb-others-grid">
+            <!-- populated dynamically by host.js -->
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 5: WINNER
-  ══════════════════════════════════════════════ -->
+       SCREEN 5: WINNER — diseño original de victoria
+    ══════════════════════════════════════════════ -->
     <div class="screen winner-screen" id="screen-winner">
-      <div class="winner-title" id="winner-title">🎉 Player is the Winner!</div>
-      <div class="winner-card">
-        <div class="winner-avatar">🏆</div>
-        <div class="winner-name" id="winner-name">-</div>
-        <div class="winner-score" id="winner-score">0 pts</div>
-        <div class="winner-quote" id="winner-quote"></div>
+
+      <div id="confetti-container"></div>
+
+      <h1 class="winner-big-title" id="winner-title">🎉 Player is the Winner!</h1>
+
+      <div class="winner-main-layout">
+
+        <section class="winner-display-wrap">
+          <div class="winner-visual">
+            <div class="burst-bg">
+              <div class="winner-avatar-circle" id="winner-avatar">🏆</div>
+            </div>
+          </div>
+          <div class="quote-box">
+            <p class="quote-text" id="winner-quote"></p>
+            <p class="quote-author" id="winner-quote-author">— Player</p>
+          </div>
+        </section>
+
+        <section class="winner-lb-section">
+          <div class="winner-lb-label">Leaderboard</div>
+          <div class="winner-lb-rows" id="winner-results">
+            <!-- populated dynamically by host.js -->
+          </div>
+        </section>
+
       </div>
-      <div class="winner-podium" id="winner-podium"></div>
-      <div class="winner-actions">
-        <button class="btn-home" onclick="goHome()">🏠 Home</button>
-        <button class="btn-play-again" onclick="playAgain()">
-          🔄 Play Again
-        </button>
+
+      <div class="winner-btns">
+        <button class="winner-btn winner-btn-home"   onclick="goHome()">🏠 Home</button>
+        <button class="winner-btn winner-btn-replay" onclick="playAgain()">🔄 Play Again</button>
       </div>
+
     </div>
 
     <!-- ══════════════════════════════════════════════
        SCREEN 6: LIAR WRITING PHASE (host view)
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-writing">
       <div class="liar-header">
         <div class="liar-round-badge" id="liar-round-badge">ROUND 1 OF 3</div>
@@ -172,12 +225,10 @@
 
     <!-- ══════════════════════════════════════════════
        SCREEN 7: LIAR VOTING PHASE (host view)
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-voting">
       <div class="liar-header">
-        <div class="liar-round-badge" id="liar-voting-round-badge">
-          ROUND 1 OF 3
-        </div>
+        <div class="liar-round-badge" id="liar-voting-round-badge">ROUND 1 OF 3</div>
         <div class="liar-phase-badge">🗳️ Voting Phase</div>
         <div class="liar-timer-badge" id="liar-voting-timer">30</div>
       </div>
@@ -190,9 +241,7 @@
           <div class="liar-question-text" id="liar-voting-question">-</div>
         </div>
         <div class="liar-answers-list" id="liar-voting-answers"></div>
-        <div class="liar-progress" id="liar-voting-progress">
-          Votes cast: 0/0
-        </div>
+        <div class="liar-progress" id="liar-voting-progress">Votes cast: 0/0</div>
       </div>
       <div class="liar-footer">
         <button class="btn-liar-action" onclick="ws.send('FORCE_REVEAL')">
@@ -203,12 +252,10 @@
 
     <!-- ══════════════════════════════════════════════
        SCREEN 8: LIAR REVEAL
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-reveal">
       <div class="liar-header">
-        <div class="liar-round-badge" id="liar-reveal-round-badge">
-          ROUND 1 OF 3
-        </div>
+        <div class="liar-round-badge" id="liar-reveal-round-badge">ROUND 1 OF 3</div>
         <div class="liar-phase-badge">🎭 Results</div>
       </div>
       <div class="liar-body">
@@ -223,7 +270,7 @@
         ></div>
       </div>
       <div class="liar-footer">
-        <button class="btn-liar-action" onclick="ws.send('NEXT_QUESTION')">
+        <button class="btn-liar-action" id="btn-liar-next" onclick="ws.send('NEXT_QUESTION')">
           Next Round ➔
         </button>
       </div>
@@ -231,7 +278,7 @@
 
     <!-- ══════════════════════════════════════════════
        MODAL SETTINGS
-  ══════════════════════════════════════════════ -->
+    ══════════════════════════════════════════════ -->
     <div class="modal-overlay" id="modal" onclick="handleOverlay(event)">
       <div class="modal">
         <div class="modal-header">
@@ -241,27 +288,17 @@
         <div>
           <p class="modal-section">GAME TYPE</p>
           <div class="game-types">
-            <div
-              class="game-type selected"
-              onclick="selectType(this, 'ai_trivia')"
-            >
-              <div>🧠</div>
-              <div>AI TRIVIA</div>
+            <div class="game-type selected" onclick="selectType(this, 'ai_trivia')">
+              <div>🧠</div><div>AI TRIVIA</div>
             </div>
             <div class="game-type" onclick="selectType(this, 'liar_game')">
-              <div>🎭</div>
-              <div>LIAR GAME</div>
+              <div>🎭</div><div>LIAR GAME</div>
             </div>
           </div>
         </div>
         <div id="topic-section">
           <p class="modal-section">TOPIC (FOR AI)</p>
-          <input
-            class="modal-input"
-            id="topic-input"
-            type="text"
-            placeholder="e.g. History, Sports..."
-          />
+          <input class="modal-input" id="topic-input" type="text" placeholder="e.g. History, Sports..."/>
         </div>
         <div>
           <p class="modal-section">NUMBER OF QUESTIONS</p>
@@ -273,7 +310,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
-          <button class="btn-save" onclick="saveSettings()">SAVE</button>
+          <button class="btn-save"   onclick="saveSettings()">SAVE</button>
         </div>
       </div>
     </div>
