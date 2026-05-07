@@ -338,55 +338,97 @@ ws.on("ANSWER_REVEALED", ({ correct, correctText }) => {
   });
 });
 
-// ── Leaderboard ───────────────────────────────────────────────────────────
-ws.on("LEADERBOARD", ({ leaderboard }) => {
-  const rankLabels = ["🥇", "🥈", "🥉"];
-  const rankClasses = ["gold", "silver", "bronze"];
+      // ── Leaderboard ───────────────────────────────────────────────────────────
+      ws.on("LEADERBOARD", ({ leaderboard }) => {
+        const tags = [
+          "Actually the GOAT 🐐",
+          "2nd place is 1st loser. Yikes.",
+          "Were you guys even playing?",
+        ];
 
-  document.getElementById("leaderboard-list").innerHTML = leaderboard
-    .map(
-      (p, i) => `
-        <div class="leaderboard-row">
-          <div class="lb-rank ${rankClasses[i] || ""}">${rankLabels[i] || i + 1}</div>
-          <div class="lb-name">${p.name}</div>
-          <div class="lb-points">
-            ${p.score}
-            ${p.lastPoints > 0 ? `<span class="lb-delta">+${p.lastPoints}</span>` : ""}
-          </div>
-        </div>`,
-    )
-    .join("");
+        // Capa 1 — 1er lugar
+        const p1 = leaderboard[0];
+        if (p1) {
+          document.getElementById("lb-avatar-1").textContent = p1.avatar || AVATARS[0];
+          document.getElementById("lb-tag-1").textContent    = tags[0];
+          document.getElementById("lb-name-1").textContent   = p1.name.toUpperCase();
+          document.getElementById("lb-points-1").textContent = p1.score;
+        }
 
-  showScreen("screen-leaderboard");
-});
+        // Capa 2 — 2do lugar
+        const p2 = leaderboard[1];
+        if (p2) {
+          document.getElementById("lb-avatar-2").textContent = p2.avatar || AVATARS[1];
+          document.getElementById("lb-tag-2").textContent    = tags[1];
+          document.getElementById("lb-name-2").textContent   = p2.name.toUpperCase();
+          document.getElementById("lb-points-2").textContent = p2.score;
+        }
+
+        // Capa 3 — 3ro en adelante
+        const rest = leaderboard.slice(2);
+        document.getElementById("lb-others-grid").innerHTML = rest
+          .map((p) => `
+            <div class="lb-mini-player">
+              <div class="lb-avatar-mini">${p.avatar || "🎮"}</div>
+              <div class="lb-name-mini">${p.name.toUpperCase()}</div>
+              <div class="lb-score-mini">${p.score}</div>
+            </div>`)
+          .join("");
+
+        // Ocultar capa 2 y 3 si no hay suficientes jugadores
+        document.getElementById("lb-layer-2").style.display = p2 ? "flex" : "none";
+        document.getElementById("lb-layer-3").style.display = rest.length > 0 ? "flex" : "none";
+
+        showScreen("screen-leaderboard");
+      });
 
 function nextQuestion() {
   ws.send("NEXT_QUESTION");
 }
 
-// ── Game Over ─────────────────────────────────────────────────────────────
-ws.on("GAME_OVER", ({ winner, leaderboard }) => {
-  document.getElementById("winner-title").textContent =
-    `🎉 ${winner.name} is the Winner!`;
-  document.getElementById("winner-name").textContent = winner.name;
-  document.getElementById("winner-score").textContent = `${winner.score} pts`;
-  document.getElementById("winner-quote").textContent = winner.victoryQuote
-    ? `"${winner.victoryQuote}"`
-    : "";
+      // ── Game Over ─────────────────────────────────────────────────────────────
+      ws.on("GAME_OVER", ({ winner, leaderboard }) => {
+        // Título principal
+        document.getElementById("winner-title").textContent =
+          `🎉 ${winner.name} is the Winner!`;
 
-  // Podio (2do y 3ro)
-  document.getElementById("winner-podium").innerHTML = leaderboard
-    .slice(1, 3)
-    .map(
-      (p, i) => `
-        <div class="podium-item">
-          ${i === 0 ? "🥈" : "🥉"} ${p.name}<br>${p.score} pts
-        </div>`,
-    )
-    .join("");
+        // Avatar del ganador en el burst
+        document.getElementById("winner-avatar").textContent =
+          winner.avatar || "🏆";
 
-  showScreen("screen-winner");
-});
+        // Quote box
+        document.getElementById("winner-quote").textContent =
+          winner.victoryQuote ? `"${winner.victoryQuote}"` : "No words needed. 👑";
+        document.getElementById("winner-quote-author").textContent =
+          `— ${winner.name}`;
+
+        // Leaderboard derecho con todos los jugadores
+        const positions = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"];
+        document.getElementById("winner-results").innerHTML = leaderboard
+          .map((p, i) => `
+            <div class="winner-result-row">
+              <span class="winner-result-pos">${positions[i] || `${i + 1}th`}</span>
+              <span class="winner-result-name">${p.name}</span>
+              <span class="winner-result-score">${p.score}</span>
+            </div>`)
+          .join("");
+
+        // Confetti
+        const container = document.getElementById("confetti-container");
+        container.innerHTML = "";
+        const colors = ["#F5C400", "#C4281A", "#1A8C3C", "#1A5FA0", "#6B2FA0"];
+        for (let i = 0; i < 60; i++) {
+          const c = document.createElement("div");
+          c.className = "confetti";
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          c.style.animationDuration = (Math.random() * 2 + 2) + "s";
+          c.style.animationDelay = Math.random() * 2 + "s";
+          container.appendChild(c);
+        }
+
+        showScreen("screen-winner");
+      });
 
 // ── Errores ───────────────────────────────────────────────────────────────
 ws.on("ERROR", ({ message }) => alert(message));

@@ -1,5 +1,4 @@
-
-      *,
+*,
       *::before,
       *::after {
         box-sizing: border-box;
@@ -1037,3 +1036,421 @@
         transform: translate(-2px, -2px);
         box-shadow: 6px 6px 0 var(--black);
       }
+
+/* ════════════════════════════════════════════════════════
+   SCREEN 4: LEADERBOARD — diseño de capas (results.html)
+   ════════════════════════════════════════════════════════ */
+
+.lb-screen {
+  background-color: var(--purple);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+  background-size: 30px 30px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.lb-header-area {
+  padding: clamp(1rem, 3vh, 2rem) 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.lb-results-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.8rem, 5vh, 3rem);
+  color: var(--white);
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0px var(--black);
+  transform: rotate(-1deg);
+  text-align: center;
+}
+
+.lb-btn-next {
+  padding: 0.6rem 2.5rem;
+  background: var(--yellow);
+  border: var(--border);
+  border-radius: 12px;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1rem, 2vh, 1.2rem);
+  color: var(--black);
+  box-shadow: 4px 4px 0 var(--black);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.lb-btn-next:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--black); }
+
+/* Stack de capas */
+.lb-stack-area {
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+}
+
+.lb-layer {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  border: var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.lb-layer-1 {
+  z-index: 1;
+  background: #EAE0C8;
+  width: 95%;
+  height: 90%;
+  min-width: 300px;
+  border-radius: clamp(50px, 10vw, 80px) 0 0 0;
+}
+
+.lb-layer-2 {
+  z-index: 2;
+  background: #DFD4BA;
+  width: clamp(280px, 80%, 85%);
+  height: 70%;
+  border-radius: clamp(40px, 8vw, 60px) 0 0 0;
+}
+
+.lb-layer-3 {
+  z-index: 3;
+  background: #D4C8AC;
+  width: clamp(260px, 65%, 75%);
+  height: 45%;
+  border-radius: clamp(30px, 6vw, 40px) 0 0 0;
+}
+
+.lb-content-row {
+  padding-top: clamp(0.8rem, 3vh, 1.5rem);
+  padding-left: clamp(2rem, 8vw, 5rem);
+  padding-right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.lb-others-header {
+  padding-bottom: 0.5rem;
+}
+
+.lb-avatar-circle {
+  width: clamp(55px, 10vh, 90px);
+  height: clamp(55px, 10vh, 90px);
+  border: var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.8rem, 4vh, 3rem);
+  background-color: var(--white);
+  box-shadow: 4px 4px 0 var(--black);
+  flex-shrink: 0;
+}
+
+.lb-player-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lb-player-tag {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(0.7rem, 1.5vh, 1rem);
+  color: var(--purple);
+  text-transform: uppercase;
+  margin-bottom: -0.2rem;
+}
+
+.lb-player-name {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.4rem, 4.5vh, 3rem);
+  color: var(--black);
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-points {
+  margin-left: auto;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.6rem, 5.5vh, 4rem);
+  color: var(--purple);
+  white-space: nowrap;
+}
+
+/* Otros jugadores dentro de la capa 3 */
+.lb-others-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-left: clamp(2rem, 8vw, 5rem);
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  overflow-y: auto;
+}
+
+.lb-mini-player {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.lb-avatar-mini {
+  width: clamp(40px, 7vh, 65px);
+  height: clamp(40px, 7vh, 65px);
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.3rem, 3vh, 2rem);
+  box-shadow: 4px 4px 0 var(--black);
+  flex-shrink: 0;
+}
+
+.lb-name-mini {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1rem, 3vh, 2rem);
+  color: var(--black);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lb-score-mini {
+  margin-left: auto;
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.1rem, 3.5vh, 2.5rem);
+  color: var(--purple);
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════════════════
+   SCREEN 5: WINNER — diseño original (victoria.html)
+   ════════════════════════════════════════════════════════ */
+
+.winner-screen {
+  background: var(--purple);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1.5px, transparent 1.5px);
+  background-size: 30px 30px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  gap: 2rem;
+  overflow-x: hidden;
+}
+
+.winner-big-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--white);
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0 var(--black);
+}
+
+/* Layout de dos columnas */
+.winner-main-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  max-width: 1100px;
+  width: 100%;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .winner-main-layout { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+/* Columna izquierda: avatar burst + quote */
+.winner-display-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .winner-display-wrap { flex-direction: column; text-align: center; }
+}
+
+.winner-visual { position: relative; flex-shrink: 0; }
+
+.burst-bg {
+  background: #e65b89;
+  width: clamp(160px, 20vh, 220px);
+  height: clamp(160px, 20vh, 220px);
+  clip-path: polygon(50% 0%, 61% 14%, 78% 8%, 82% 26%, 98% 28%, 91% 45%, 100% 60%, 86% 72%, 91% 89%, 73% 91%, 67% 100%, 50% 92%, 33% 100%, 27% 91%, 9% 89%, 14% 72%, 0% 60%, 9% 45%, 2% 28%, 18% 26%, 22% 8%, 39% 14%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(4px 4px 0px var(--black));
+}
+
+.winner-avatar-circle {
+  background: #5C87C1;
+  width: 55%;
+  height: 55%;
+  border-radius: 50%;
+  border: var(--border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(2.5rem, 7vh, 4.5rem);
+  box-shadow: inset -5px -5px 0 rgba(0,0,0,0.1);
+}
+
+.quote-box {
+  background: #F8F5F0;
+  border: var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  position: relative;
+  box-shadow: 5px 5px 0 var(--black);
+  flex: 1;
+}
+
+.quote-box::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 18px solid var(--black);
+}
+
+@media (max-width: 900px) {
+  .quote-box::before {
+    left: 50%;
+    top: -25px;
+    transform: translateX(-50%) rotate(90deg);
+  }
+}
+
+.quote-text {
+  font-size: clamp(1rem, 2.5vh, 1.4rem);
+  font-weight: 800;
+  color: var(--black);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  font-style: italic;
+}
+
+.quote-author {
+  text-align: right;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.1rem;
+  color: var(--purple);
+  text-transform: uppercase;
+}
+
+/* Columna derecha: leaderboard */
+.winner-lb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.winner-lb-label {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.5rem;
+  background: #F8F5F0;
+  border: var(--border);
+  padding: 0.4rem 1.2rem;
+  display: inline-block;
+  align-self: flex-start;
+  transform: skew(-5deg);
+  box-shadow: 4px 4px 0 var(--black);
+}
+
+.winner-lb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.winner-result-row {
+  background: #F8F5F0;
+  border: var(--border);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 var(--black);
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+}
+
+.winner-result-pos {
+  font-family: 'Fredoka One', cursive;
+  width: 40px;
+  color: var(--black);
+}
+
+.winner-result-name {
+  flex: 1;
+  font-family: 'Fredoka One', cursive;
+  color: var(--black);
+  text-transform: uppercase;
+}
+
+.winner-result-score {
+  font-family: 'Fredoka One', cursive;
+  color: var(--purple);
+}
+
+/* Botones inferiores */
+.winner-btns {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.winner-btn {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: var(--border);
+  border-radius: 16px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 var(--black);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.winner-btn:hover  { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--black); }
+.winner-btn:active { transform: translate(4px, 4px);   box-shadow: 2px 2px 0 var(--black); }
+
+.winner-btn-home   { background: #F8F5F0; color: var(--black); }
+.winner-btn-replay { background: var(--yellow); color: var(--black); }
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  top: -20px;
+  z-index: 100;
+  animation: confettiFall 3s linear infinite;
+}
+
+@keyframes confettiFall {
+  to { transform: translateY(110vh) rotate(360deg); }
+}
