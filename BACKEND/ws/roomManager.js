@@ -99,6 +99,7 @@ function getLeaderboard(room) {
       score: p.score,
       lastPoints: p.lastPoints,
       victoryQuote: p.victoryQuote,
+      avatar: p.avatar || null,
     }))
     .sort((a, b) => b.score - a.score);
 }
