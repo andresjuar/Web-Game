@@ -339,49 +339,56 @@ ws.on("ANSWER_REVEALED", ({ correct, correctText }) => {
 });
 
       // ── Leaderboard ───────────────────────────────────────────────────────────
-      ws.on("LEADERBOARD", ({ leaderboard }) => {
-        const tags = [
-          "Actually the GOAT 🐐",
-          "2nd place is 1st loser. Yikes.",
-          "Were you guys even playing?",
-        ];
+ws.on("LEADERBOARD", ({ leaderboard }) => {
+  const tags = [
+    "Actually the GOAT 🐐",
+    "2nd place is the 1st place for losers. Yikes.",
+    "Were you guys even playing?",
+  ];
 
-        // Capa 1 — 1er lugar
-        const p1 = leaderboard[0];
-        if (p1) {
-          document.getElementById("lb-avatar-1").textContent = p1.avatar || AVATARS[0];
-          document.getElementById("lb-tag-1").textContent    = tags[0];
-          document.getElementById("lb-name-1").textContent   = p1.name.toUpperCase();
-          document.getElementById("lb-points-1").textContent = p1.score;
-        }
+  const p1 = leaderboard[0];
+  const p2 = leaderboard[1];
+  const rest = leaderboard.slice(2);
 
-        // Capa 2 — 2do lugar
-        const p2 = leaderboard[1];
-        if (p2) {
-          document.getElementById("lb-avatar-2").textContent = p2.avatar || AVATARS[1];
-          document.getElementById("lb-tag-2").textContent    = tags[1];
-          document.getElementById("lb-name-2").textContent   = p2.name.toUpperCase();
-          document.getElementById("lb-points-2").textContent = p2.score;
-        }
+  // Capa 1 — 1er lugar
+  if (p1) {
+    document.getElementById("lb-avatar-1").textContent = p1.avatar || AVATARS[0];
+    document.getElementById("lb-tag-1").textContent    = tags[0];
+    document.getElementById("lb-name-1").textContent   = p1.name.toUpperCase();
+    document.getElementById("lb-points-1").textContent = p1.score;
+  }
 
-        // Capa 3 — 3ro en adelante
-        const rest = leaderboard.slice(2);
-        document.getElementById("lb-others-grid").innerHTML = rest
-          .map((p) => `
-            <div class="lb-mini-player">
-              <div class="lb-avatar-mini">${p.avatar || "🎮"}</div>
-              <div class="lb-name-mini">${p.name.toUpperCase()}</div>
-              <div class="lb-score-mini">${p.score}</div>
-            </div>`)
-          .join("");
+  // Capa 2 — 2do lugar
+  const layer2 = document.querySelector(".lb-layer-2");
+  if (p2) {
+    layer2.style.display = "flex";
+    document.getElementById("lb-avatar-2").textContent = p2.avatar || AVATARS[1];
+    document.getElementById("lb-tag-2").textContent    = tags[1];
+    document.getElementById("lb-name-2").textContent   = p2.name.toUpperCase();
+    document.getElementById("lb-points-2").textContent = p2.score;
+  } else {
+    layer2.style.display = "none";
+  }
 
-        // Ocultar capa 2 y 3 si no hay suficientes jugadores
-        document.getElementById("lb-layer-2").style.display = p2 ? "flex" : "none";
-        document.getElementById("lb-layer-3").style.display = rest.length > 0 ? "flex" : "none";
+  // Capa 3 — 3ro en adelante
+  const layer3 = document.querySelector(".lb-layer-3");
+  if (rest.length > 0) {
+    layer3.style.display = "flex";
+    document.getElementById("lb-tag-3").textContent = tags[2];
+    document.getElementById("lb-others-grid").innerHTML = rest.map(p => `
+      <div class="lb-mini-player">
+        <div class="lb-avatar-mini">${p.avatar || "🎮"}</div>
+        <div class="lb-mini-player-info">
+          <span class="lb-name-mini">${p.name.toUpperCase()}</span>
+        </div>
+        <div class="lb-score-mini">${p.score}</div>
+      </div>`).join("");
+  } else {
+    layer3.style.display = "none";
+  }
 
-        showScreen("screen-leaderboard");
-      });
-
+  showScreen("screen-leaderboard");
+});
 function nextQuestion() {
   ws.send("NEXT_QUESTION");
 }
