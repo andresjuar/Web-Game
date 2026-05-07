@@ -423,7 +423,7 @@
 
       <div class="tip">
         <strong>TIP:</strong> You can also join from
-        <strong>ricoquiz.app</strong> with the 4-letter code
+        <strong id="link">ricoquiz.app</strong> with the 4-letter code
       </div>
     </div>
 
@@ -461,6 +461,14 @@ function goJoin() {
   sessionStorage.setItem('roomCode', code);
   window.location.href = '/player/player.html';
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const joinUrl = `${window.location.origin}`;
+  const displayUrl = joinUrl.replace(/^https?:\/\//, ""); 
+
+  document.getElementById("link").textContent = displayUrl;
+});
     </script>
     <script>
       // this line is added in order to kill a room if the host goes back to the main page
