@@ -157,7 +157,7 @@ function handleJoinRoom(socket, { code, name, victoryQuote, avatar }) {
   }
 
   const safeName = (name || "Player").trim().substring(0, 20);
-  addPlayer(room, socket, safeName, victoryQuote, avatar );
+  addPlayer(room, socket, safeName, victoryQuote, avatar);
 
   // Confirm to player
   socket.send(
@@ -202,8 +202,13 @@ function handleRejoinRoom(socket, { code, name, role }) {
       JSON.stringify({
         type: "REJOINED_OK",
         payload: { code: room.code, role: "host", state: room.state },
-      }));
-      return;
+      }),
+    );
+
+    sendToHost(room, "PLAYER_JOINED", {
+      players: getPlayerList(room),
+    });
+    return;
   }
 
   // Find player by name (best effort reconnect)
