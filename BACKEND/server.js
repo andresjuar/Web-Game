@@ -23,6 +23,8 @@ app.get("/api/rooms/:code/exists", (req, res) => {
 });
 
 
+
+
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 wss.on("connection", handleConnection);
 
@@ -37,3 +39,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../FRONTEND/views/index.html"));
 });
  
+app.get("/join/:code", (req, res) => {
+  res.sendFile(path.join(__dirname, "../FRONTEND/views/player/player.html"));
+});
