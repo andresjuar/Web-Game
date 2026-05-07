@@ -9,7 +9,7 @@
  */
 
 const ws = (() => {
-  const url = `ws://${location.host}`;
+  const url = `wss://${location.host}`;
   let socket = null;
   const handlers = {}; // type -> [callbacks]
 
@@ -24,6 +24,7 @@ const ws = (() => {
       const role = sessionStorage.getItem("role");
       console.log(role)
       if (code && role ) {
+        isRejoining = true;
         send("REJOIN_ROOM", { code, name, role });
       }
     });

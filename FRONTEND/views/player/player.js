@@ -92,8 +92,17 @@ ws.on("JOINED_OK", ({ code, name }) => {
   showScreen("screen-wait");
 });
 
-ws.on("JOIN_ERROR", ({ message }) => alert(message));
+let isRejoining = false;
 
+ws.on("JOIN_ERROR", ({ message }) => {
+  if (isRejoining) {
+    isRejoining = false;
+    sessionStorage.clear();
+    window.location.href = "/";
+  } else {
+    alert(message);
+  }
+});
 // ── Waiting: escuchar eventos del host ──────────────────────────────────────
 ws.on("LOADING", () => {
   showScreen("screen-wait");
@@ -327,3 +336,34 @@ function goHome() {
   sessionStorage.clear();
   window.location.href = "/";
 }
+
+
+ws.on("REJOINED_OK", ({ role, state, gameType, score, name }) => {
+  if (role !== "player") return;
+
+  // Actualizar score en sessionStorage por si cambió
+  if (score !== undefined) {
+    sessionStorage.setItem("playerScore", score);
+  }
+
+  const screenMap = {
+    lobby:        "screen-wait",
+    loading:      "screen-wait",
+    ready:        "screen-wait",
+    question:     "screen-answer",
+    reveal:       "screen-answer",
+    leaderboard:  "screen-results",
+    finished:     "screen-winner",
+    liar_writing: "screen-liar-write",
+    liar_voting:  "screen-liar-vote",
+    liar_reveal:  "screen-liar-reveal",
+  };
+
+  const screen = screenMap[state] || "screen-wait";
+  showScreen(screen);
+});
+
+
+ws.on("GAME_RESET", () => {
+  showScreen("screen-wait");
+});

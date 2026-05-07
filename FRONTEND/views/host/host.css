@@ -113,14 +113,24 @@
         padding: 0.3rem;
         cursor: pointer;
       }
-      .qr-placeholder {
-        width: clamp(80px, 15vh, 120px);
-        height: clamp(80px, 15vh, 120px);
-        background: var(--white);
-        border: var(--border);
-        box-shadow: var(--shadow);
-        padding: 5px;
-      }
+.qr-placeholder {
+  width: clamp(80px, 15vh, 120px);
+  height: clamp(80px, 15vh, 120px);
+  background: var(--white);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.qr-placeholder canvas,
+.qr-placeholder img {
+  width: 100% !important;
+  height: 100% !important;
+}
       .qr-pattern {
         width: 100%;
         height: 100%;

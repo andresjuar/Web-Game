@@ -87,6 +87,8 @@ function handleConnection(socket) {
         return handleRevealAnswer(socket);
       case "FORCE_REVEAL":
         return handleForceReveal(socket); // liar game
+      case "RESET_GAME":
+        return handleResetGame(socket);
 
       // ── Player: answers & votes ────────────────────────────────────────────
       case "SUBMIT_ANSWER":
@@ -186,45 +188,59 @@ function handleRejoinRoom(socket, { code, name, role }) {
     );
     return;
   }
-  // this is to manage when the host changes views
 
-  //console.log("re joining");
   if (role === "host") {
-    //console.log(role);
-    //erase timer
     if (room._hostDisconnectTimer) {
       clearTimeout(room._hostDisconnectTimer);
       room._hostDisconnectTimer = null;
     }
-
     room.hostSocket = socket;
     socket.send(
       JSON.stringify({
         type: "REJOINED_OK",
-        payload: { code: room.code, role: "host", state: room.state },
+        payload: {
+          code: room.code,
+          role: "host",
+          state: room.state,
+          gameType: room.gameType,
+          currentQuestion: room.currentQuestion,
+          totalQuestions: room.questions.length,
+        },
       }),
     );
-
-    sendToHost(room, "PLAYER_JOINED", {
-      players: getPlayerList(room),
-    });
+    sendToHost(room, "PLAYER_JOINED", { players: getPlayerList(room) });
     return;
   }
 
-  // Find player by name (best effort reconnect)
-  const entry = Object.entries(room.players).find(([, p]) => p.name === name);
-  if (!entry) {
+  // ── Player rejoin ──────────────────────────────────────────────────────────
+  if (!name) {
     socket.send(
       JSON.stringify({
         type: "JOIN_ERROR",
-        payload: { message: "Player not found in room." },
+        payload: { message: "No name provided for rejoin." },
+      }),
+    );
+    return;
+  }
+
+  const entry = Object.entries(room.players).find(([, p]) => p.name === name);
+  if (!entry) {
+    // El jugador no existe — puede que la sala se reinició
+    socket.send(
+      JSON.stringify({
+        type: "JOIN_ERROR",
+        payload: { message: "Session expired. Please rejoin manually." },
       }),
     );
     return;
   }
 
   const [oldId, player] = entry;
-  // Reassign socket
+
+  if (player._disconnectTimer) {
+    clearTimeout(player._disconnectTimer);
+    player._disconnectTimer = null;
+  }
   delete room.players[oldId];
   player.socket = socket;
   room.players[socket.id] = player;
@@ -234,12 +250,38 @@ function handleRejoinRoom(socket, { code, name, role }) {
       type: "REJOINED_OK",
       payload: {
         code: room.code,
+        role: "player",
         name: player.name,
         score: player.score,
         state: room.state,
+        gameType: room.gameType,
       },
     }),
   );
+
+  if (room.state === "question" && room.questions.length > 0) {
+  const q = room.questions[room.currentQuestion];
+  socket.send(JSON.stringify({
+    type: "QUESTION",
+    payload: {
+      questionIndex: room.currentQuestion,
+      totalQuestions: room.questions.length,
+      question: q.question,
+      options: q.options,
+      timeLimit: room._questionTimeLimit || 15,
+    },
+  }));
+}
+
+// Si está en reveal, reenviar la respuesta correcta
+if (room.state === "reveal" && room.questions.length > 0) {
+  const q = room.questions[room.currentQuestion];
+  socket.send(JSON.stringify({
+    type: "ANSWER_REVEALED",
+    payload: { correct: q.correct, correctText: q.options[q.correct] },
+  }));
+}
+
 
   console.log(`[WS] ${player.name} rejoined room ${room.code}`);
 }
@@ -384,18 +426,63 @@ function handleDisconnect(socket) {
 
     room.hostSocket = null;
   } else {
-    // Player left
     const player = room.players[socket.id];
-    const name = player?.name || "A player";
-    removePlayer(room, socket.id);
+    if (!player) return;
 
-    sendToHost(room, "PLAYER_LEFT", {
-      players: getPlayerList(room),
-      name,
-    });
+    const name = player.name;
 
-    console.log(`[WS] ${name} left room ${room.code}`);
+    // Dar 5s de gracia por si está recargando la página
+    player._disconnectTimer = setTimeout(() => {
+      // Si después de 5s no reconectó, eliminarlo
+      if (
+        room.players[socket.id] &&
+        room.players[socket.id].socket.readyState !== 1
+      ) {
+        removePlayer(room, socket.id);
+        sendToHost(room, "PLAYER_LEFT", {
+          players: getPlayerList(room),
+          name,
+        });
+        console.log(`[WS] ${name} removed from room ${room.code} (timeout)`);
+      }
+    }, 30000);
+
+    //room.players[socket.id].socket = { readyState: 0 }; 
+    console.log(`[WS] ${name} disconnected, waiting 30s for rejoin...`);
   }
+}
+
+function handleResetGame(socket) {
+  const ctx = findSocketContext(socket);
+  if (!ctx || ctx.role !== "host") return;
+  const { room } = ctx;
+
+  // Limpiar estado del juego pero mantener jugadores y sala
+  if (room.timer) { clearInterval(room.timer); room.timer = null; }
+  room.state = "lobby";
+  room.questions = [];
+  room.currentQuestion = -1;
+  room.gameType = null;
+  room.topic = null;
+  room.liarRound = null;
+  room._questionStartedAt = null;
+
+  // Resetear scores de jugadores
+  Object.values(room.players).forEach(p => {
+    p.score = 0;
+    p.lastPoints = 0;
+    p.lastAnswerCorrect = false;
+    p.textAnswer = null;
+    p.vote = null;
+  });
+
+  // Notificar a todos
+  broadcastToAll(room, "GAME_RESET", {});
+
+  socket.send(JSON.stringify({
+    type: "LOBBY_READY",
+    payload: { code: room.code, players: getPlayerList(room) },
+  }));
 }
 
 module.exports = { handleConnection };

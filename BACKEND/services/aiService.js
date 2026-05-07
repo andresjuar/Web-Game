@@ -54,7 +54,12 @@ async function generateTriviaQuestions(topic, count = 8) {
     "question": "Which agent is known for using a bow and recon abilities?",
     "options": ["Sova", "Phoenix", "Jett", "Brimstone"],
     "correct": 0
-  },
+  }
+]`);
+
+/* 
+
+,
   {
     "question": "What is the name of the spike defusal game mode in VALORANT?",
     "options": ["Demolition", "Search and Destroy", "Unrated", "Spike Rush"],
@@ -80,7 +85,8 @@ async function generateTriviaQuestions(topic, count = 8) {
     "options": ["Omen", "Cypher", "Breach", "Raze"],
     "correct": 0
   }
-]`);
+ */
+
 }
 /**
  * Generates Liar Game prompts.

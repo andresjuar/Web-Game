@@ -398,18 +398,60 @@ function goHome() {
 }
 
 function playAgain() {
-  sessionStorage.removeItem("roomCode");
-  window.location.href = "/";
+  ws.send("RESET_GAME");
 }
 
+ws.on("LOBBY_READY", ({ code, players }) => {
 
-ws.on("REJOINED_OK", ({ role, state }) => {
+  document.getElementById("lobby-code").textContent = code;
+  const joinUrl = `${window.location.origin}/join/${code}`;
+  document.getElementById("lobby-link").textContent = joinUrl.replace(/^https?:\/\//, "");
+  renderPlayers(players);
+  showScreen("screen-lobby");
+});
+
+ws.on("REJOINED_OK", ({ role, state, gameType, currentQuestion, totalQuestions }) => {
   if (role !== "host") return;
-  if (state === "lobby") {
-    const code = sessionStorage.getItem("roomCode");
-    document.getElementById("lobby-code").textContent = code;
-    const joinUrl = `${window.location.origin}/join/${code}`;
-    document.getElementById("lobby-link").textContent = joinUrl.replace(/^https?:\/\//, "");
-    showScreen("screen-lobby");
+
+  const code = sessionStorage.getItem("roomCode");
+  document.getElementById("lobby-code").textContent = code;
+  const joinUrl = `${window.location.origin}/join/${code}`;
+  document.getElementById("lobby-link").textContent = joinUrl.replace(/^https?:\/\//, "");
+
+  const screenMap = {
+    lobby:       "screen-lobby",
+    loading:     "screen-loading",
+    ready:       "screen-lobby",      
+    question:    "screen-question",
+    reveal:      "screen-question",   
+    leaderboard: "screen-leaderboard",
+    finished:    "screen-winner",
+
+    liar_writing: "screen-liar-writing",
+    liar_voting:  "screen-liar-voting",
+    liar_reveal:  "screen-liar-reveal",
+  };
+
+  const screen = screenMap[state] || "screen-lobby";
+  showScreen(screen);
+});
+
+// para que se genere el qr
+document.addEventListener("DOMContentLoaded", () => {
+  const code = sessionStorage.getItem("roomCode");
+  document.getElementById("lobby-code").textContent = code || "----";
+
+  const joinUrl = `${window.location.origin}/join/${code}`;
+  document.getElementById("lobby-link").textContent = joinUrl.replace(/^https?:\/\//, "");
+
+  // Generar QR
+  if (code) {
+    new QRCode(document.getElementById("qr-code"), {
+      text: joinUrl,
+      width: 110,
+      height: 110,
+      colorDark: "#111111",
+      colorLight: "#ffffff",
+    });
   }
 });

@@ -62,7 +62,7 @@ function nextQuestion(room) {
     endGame(room);
     return;
   }
-
+  room._questionTimeLimit = QUESTION_TIME;
   const q = room.questions[room.currentQuestion];
   room.state = "question";
   room._questionStartedAt = Date.now(); // ← moved here from wsHandler
