@@ -552,6 +552,8 @@
           transparent 1.5px
         );
         background-size: 30px 30px;
+        justify-content: center;
+        align-items: center;
       }
       .question-header {
         display: flex;
@@ -559,6 +561,11 @@
         align-items: center;
         padding: 1.5rem 2rem 0;
       }
+
+      .question-section{
+        max-width: 1200px;
+      }
+
       .q-counter {
         background: var(--white);
         border: var(--border);
@@ -628,10 +635,10 @@
       .option-btn.opt-a {
         background: #e53935;
       }
-      .option-btn.opt-b {
+      .option-btn.opt-c {
         background: #1e88e5;
       }
-      .option-btn.opt-c {
+      .option-btn.opt-b {
         background: #43a047;
       }
       .option-btn.opt-d {
