@@ -22,7 +22,7 @@ const {
   sendToPlayer,
 } = require("./roomManager");
 
-const aiTrivia = require("../game/aiTrivia");
+const aiTrivia = require("../game/aitrivia");
 const liarGame = require("../game/liarGame");
 
 // Socket identity helpers
