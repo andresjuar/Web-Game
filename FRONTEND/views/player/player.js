@@ -1,15 +1,8 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Si viene de un link /join/ABCD, extraer el código y guardarlo
-  const pathParts = window.location.pathname.split("/");
-  const codeFromUrl = pathParts[pathParts.length - 1]?.toUpperCase();
 
-  if (codeFromUrl && codeFromUrl.length === 4) {
-    sessionStorage.setItem("roomCode", codeFromUrl);
-  }
-});
 
 // ── Estado local ────────────────────────────────────────────────────────────
-let selectedAvatar = "👤";
+let random = Math.floor((Math.random() * 20))
+
 let selectedAnswerIndex = -1;
 let currentTimeLimit = 15;
 
@@ -27,15 +20,30 @@ const AVATARS = [
   "🐨",
   "🦅",
   "🐬",
-  "🦊",
+  "🦋",
   "🐺",
-  "🦁",
+  "🫃",
   "🐮",
   "🐷",
-  "🐸",
+  "👽",
   "🐵",
 ];
+let selectedAvatar = AVATARS[random];
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Si viene de un link /join/ABCD, extraer el código y guardarlo
+  const pathParts = window.location.pathname.split("/");
+  const codeFromUrl = pathParts[pathParts.length - 1]?.toUpperCase();
+
+  if (codeFromUrl && codeFromUrl.length === 4) {
+    sessionStorage.setItem("roomCode", codeFromUrl);
+  }
+  let avatar = document.getElementById("avatar-icon");
+  if(avatar){
+    avatar.innerHTML = selectedAvatar;  
+  }
+});
 // ── Navegación ──────────────────────────────────────────────────────────────
 function showScreen(id) {
   document
@@ -57,6 +65,7 @@ function openAvatarModal() {
 
 function pickAvatar(emoji) {
   selectedAvatar = emoji;
+  document.getElementById("avatar-icon").innerHTML="";
   document.getElementById("avatar-display").childNodes[0].textContent = emoji;
   document.getElementById("avatarModal").classList.remove("open");
 }

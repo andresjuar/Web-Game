@@ -5,7 +5,8 @@ let timerInterval = null;
 let currentCorrect = -1;
 let timeLimit = 15;
 
-const AVATARS = ["🐙", "🦊", "🐸", "🦁", "🐼", "🦄", "🐯", "🐧", "🦋", "🐻"];
+/* const AVATARS = ["🐙", "🦊", "🐸", "🦁", "🐼", "🦄", "🐯", "🐧", "🦋", "🐻"];
+ */
 const COLORS = [
   "bg-blue",
   "bg-yellow",
