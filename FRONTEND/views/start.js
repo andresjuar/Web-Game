@@ -9,14 +9,6 @@ ws.on('ROOM_CREATED', ({ code }) => {
   window.location.href = 'host/host.html';
 });
 
-//player
-/* ws.on('JOINED_OK', ({ code, name }) => {
-  sessionStorage.setItem('roomCode', code);
-  sessionStorage.setItem('playerName', name);
-  sessionStorage.setItem('role', 'player');
-  window.location.href = '/player/player-setup.html';
-}); */
-
 ws.on('JOIN_ERROR', ({ message }) => {
   alert(message);
 });

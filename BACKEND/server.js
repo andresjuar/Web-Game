@@ -9,30 +9,32 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-// ── Middleware ────────────────────────────────────────────────────────────────
+// ── Middleware 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../FRONTEND/views")));
 
 app.use('/js', express.static(path.join(__dirname, "../FRONTEND/js")));
 
-// ── REST routes ───────────────────────────────────────────────────────────────
+
+
+
+
+// ── WebSocket 
+wss.on("connection", handleConnection);
+
+// ── Start 
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`RicoQuiz running on http://localhost:${PORT}`);
+});
+
+// ── REST routes
 app.get("/api/rooms/:code/exists", (req, res) => {
   const { rooms } = require("./ws/roomManager");
   const room = rooms[req.params.code.toUpperCase()];
   res.json({ exists: !!room, inProgress: room?.state !== "lobby" });
 });
 
-
-
-
-// ── WebSocket ─────────────────────────────────────────────────────────────────
-wss.on("connection", handleConnection);
-
-// ── Start ─────────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`RicoQuiz running on http://localhost:${PORT}`);
-});
 
 //console.log("Sirviendo static desde:", path.join(__dirname, "../FRONTEND/views"));
 app.get("/", (req, res) => {
