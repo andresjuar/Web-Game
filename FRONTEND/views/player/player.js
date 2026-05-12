@@ -1,10 +1,9 @@
-
-
 // ── Estado local ────────────────────────────────────────────────────────────
 let random = Math.floor((Math.random() * 20))
 
 let selectedAnswerIndex = -1;
 let currentTimeLimit = 15;
+let myLiarAnswerId = null; // own answerId during Liar Game voting
 
 const AVATARS = [
   "🐙",
@@ -124,6 +123,7 @@ ws.on("GAME_LOADING", () => {
 
 // ── Liar Game: writing phase ────────────────────────────────────────────────
 ws.on("LIAR_YOUR_TURN", ({ question, role, instruction }) => {
+  myLiarAnswerId = null; // reset for each new round
   const isSubject = role === "subject";
   const badge = document.getElementById("liar-role-badge");
   badge.textContent = isSubject
@@ -141,7 +141,8 @@ ws.on("LIAR_YOUR_TURN", ({ question, role, instruction }) => {
   showScreen("screen-liar-write");
 });
 
-ws.on("LIAR_ANSWER_RECEIVED", () => {
+ws.on("LIAR_ANSWER_RECEIVED", ({ answerId }) => {
+  myLiarAnswerId = answerId ?? null;
   document.getElementById("btn-liar-submit").disabled = true;
   document.getElementById("btn-liar-submit").textContent = "Submitted! ✓";
 });
@@ -166,12 +167,15 @@ ws.on("LIAR_VOTING_START", ({ question, answers }) => {
   document.getElementById("liar-vote-question").textContent = question;
 
   document.getElementById("vote-list").innerHTML = answers
-    .map(
-      (a) => `
-          <div class="vote-answer-card" onclick="submitVote('${a.answerId}', this)">
-            ${a.text}
-          </div>`,
-    )
+    .map((a) => {
+      const isOwn = a.answerId === myLiarAnswerId;
+      return `
+        <div class="vote-answer-card${isOwn ? " disabled own-answer" : ""}"
+             ${isOwn ? "" : `onclick="submitVote('${a.answerId}', this)"`}>
+          ${a.text}
+          ${isOwn ? '<span class="own-answer-label">Your answer</span>' : ""}
+        </div>`;
+    })
     .join("");
 
   showScreen("screen-liar-vote");
@@ -375,4 +379,4 @@ ws.on("REJOINED_OK", ({ role, state, gameType, score, name }) => {
 
 ws.on("GAME_RESET", () => {
   showScreen("screen-wait");
-});
+});T

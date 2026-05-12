@@ -46,8 +46,8 @@ async function startLiarGame(room) {
   const playerEntries = Object.entries(room.players); // [[id, playerData], ...]
   const playerCount   = playerEntries.length;
 
-  if (playerCount < 2) {
-    sendToHost(room, "ERROR", { message: "Liar Game needs at least 2 players." });
+  if (playerCount < 3) {
+    sendToHost(room, "ERROR", { message: "Liar Game needs at least 3 players." });
     return;
   }
 
@@ -207,8 +207,9 @@ function handleTextAnswer(room, socketId, text) {
 
   rd.answers[socketId] = { text: safeText, isTrue: isSubject };
 
-  // Ack to the player
-  sendToPlayer(room, socketId, "LIAR_ANSWER_RECEIVED", { text: safeText });
+  // Ack to the player — include their own answerId so the client can
+  // exclude their own card during voting
+  sendToPlayer(room, socketId, "LIAR_ANSWER_RECEIVED", { text: safeText, answerId: socketId });
 
   // Tell host how many have answered
   const expectedCount = Object.keys(room.players).length;
@@ -295,6 +296,9 @@ function handleVote(room, voterSocketId, votedForId) {
 
   // Subject cannot vote
   if (voterSocketId === rd.subjectId) return;
+
+  // Liar cannot vote for their own answer
+  if (voterSocketId === votedForId) return;
 
   // Ignore duplicate votes
   if (rd.votes[voterSocketId] !== undefined) return;

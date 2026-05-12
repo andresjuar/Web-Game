@@ -310,7 +310,19 @@ function handleStartGame(socket) {
   if (!ctx || ctx.role !== "host") return;
   const { room } = ctx;
 
-  if (Object.keys(room.players).length < 1) {
+  const playerCount = Object.keys(room.players).length;
+
+  if (room.gameType === "liar_game" && playerCount < 3) {
+    socket.send(
+      JSON.stringify({
+        type: "ERROR",
+        payload: { message: "Liar Game needs at least 3 players." },
+      }),
+    );
+    return;
+  }
+
+  if (playerCount < 1) {
     socket.send(
       JSON.stringify({
         type: "ERROR",

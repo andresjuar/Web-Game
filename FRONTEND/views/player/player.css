@@ -910,3 +910,19 @@ body {
   align-items: center;
   gap: 1rem;
 }
+
+.vote-answer-card.own-answer {
+  opacity: 0.45;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.own-answer-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--purple);
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

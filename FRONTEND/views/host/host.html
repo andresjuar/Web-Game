@@ -11,6 +11,288 @@
     />
     <link rel="stylesheet" href="/host/host.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+      /* ════════════════════════════════════════════════════════
+         LIAR TUTORIAL SCREEN
+         ════════════════════════════════════════════════════════ */
+
+      #screen-liar-tutorial {
+        background: var(--purple);
+        background-image: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.07) 1.5px,
+          transparent 1.5px
+        );
+        background-size: 30px 30px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      /* ── Header ── */
+      .tut-header {
+        width: 100%;
+        padding: 1.2rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: var(--border);
+        background: rgba(0, 0, 0, 0.2);
+        flex-shrink: 0;
+      }
+
+      .tut-logo {
+        font-family: "Fredoka One", cursive;
+        font-size: 1.6rem;
+        color: var(--yellow);
+        text-shadow: 3px 3px 0 var(--black);
+        letter-spacing: 1px;
+      }
+
+      .tut-logo span {
+        color: var(--white);
+      }
+
+      .tut-badge {
+        background: var(--yellow);
+        border: var(--border);
+        font-family: "Fredoka One", cursive;
+        font-size: 0.85rem;
+        padding: 0.3rem 1rem;
+        box-shadow: 3px 3px 0 var(--black);
+        color: var(--black);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* ── Body: slide viewport ── */
+      .tut-body {
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* slide track */
+      .tut-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+        will-change: transform;
+      }
+
+      .tut-slide {
+        flex: 0 0 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 4rem;
+        gap: 1.6rem;
+        text-align: center;
+      }
+
+      /* Slide icon/emoji bubble */
+      .tut-icon {
+        font-size: clamp(3rem, 8vh, 5.5rem);
+        background: var(--white);
+        border: var(--border);
+        border-radius: 50%;
+        width: clamp(90px, 16vh, 130px);
+        height: clamp(90px, 16vh, 130px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 6px 6px 0 var(--black);
+        flex-shrink: 0;
+        animation: tut-float 3.5s ease-in-out infinite;
+      }
+
+      @keyframes tut-float {
+        0%, 100% { transform: translateY(0px); }
+        50%       { transform: translateY(-10px); }
+      }
+
+      .tut-slide-title {
+        font-family: "Fredoka One", cursive;
+        font-size: clamp(1.6rem, 4vh, 2.6rem);
+        color: var(--yellow);
+        text-shadow: 4px 4px 0 var(--black);
+        text-transform: uppercase;
+        line-height: 1.1;
+      }
+
+      .tut-slide-body {
+        max-width: 680px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .tut-slide-desc {
+        font-family: "Nunito", sans-serif;
+        font-size: clamp(1rem, 2.2vh, 1.25rem);
+        font-weight: 800;
+        color: var(--white);
+        line-height: 1.5;
+      }
+
+      /* Pill tags inside slides */
+      .tut-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        justify-content: center;
+        margin-top: 0.4rem;
+      }
+
+      .tut-pill {
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 999px;
+        font-family: "Fredoka One", cursive;
+        font-size: 0.9rem;
+        color: var(--white);
+        padding: 0.25rem 0.9rem;
+      }
+
+      .tut-pill.gold {
+        background: var(--yellow);
+        border-color: var(--black);
+        color: var(--black);
+        box-shadow: 2px 2px 0 var(--black);
+      }
+
+      /* Highlighted info box inside slide */
+      .tut-info-box {
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        padding: 0.9rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .tut-info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-align: left;
+      }
+
+      .tut-info-row .tut-role-dot {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+
+      .tut-info-row p {
+        font-family: "Nunito", sans-serif;
+        font-weight: 800;
+        font-size: clamp(0.85rem, 1.8vh, 1rem);
+        color: var(--white);
+        line-height: 1.3;
+      }
+
+      .tut-info-row p strong {
+        color: var(--yellow);
+      }
+
+      /* ── Footer: dots + nav + start ── */
+      .tut-footer {
+        width: 100%;
+        padding: 1rem 2rem 1.5rem;
+        border-top: var(--border);
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-shrink: 0;
+      }
+
+      /* dot indicators */
+      .tut-dots {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .tut-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid var(--white);
+        background: transparent;
+        transition: background 0.25s, transform 0.25s;
+        cursor: pointer;
+      }
+
+      .tut-dot.active {
+        background: var(--yellow);
+        border-color: var(--yellow);
+        transform: scale(1.3);
+      }
+
+      /* nav buttons */
+      .tut-nav {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .tut-btn-prev,
+      .tut-btn-next {
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        font-family: "Fredoka One", cursive;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        color: var(--white);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.15s;
+      }
+
+      .tut-btn-prev:hover,
+      .tut-btn-next:hover {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      .tut-btn-prev:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+
+      /* ── START GAME button — always visible ── */
+      .tut-btn-start {
+        background: var(--yellow);
+        border: var(--border);
+        font-family: "Fredoka One", cursive;
+        font-size: clamp(0.95rem, 1.8vh, 1.15rem);
+        padding: 0.65rem 1.6rem;
+        color: var(--black);
+        cursor: pointer;
+        box-shadow: 4px 4px 0 var(--black);
+        border-radius: 8px;
+        white-space: nowrap;
+        transition: transform 0.1s, box-shadow 0.1s;
+        flex-shrink: 0;
+      }
+
+      .tut-btn-start:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 var(--black);
+      }
+
+      .tut-btn-start:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 var(--black);
+      }
+    </style>
   </head>
   <body>
 
@@ -114,8 +396,9 @@
       </div>
     </div>
 </div>
+
     <!-- ══════════════════════════════════════════════
-       SCREEN 4: LEADERBOARD — diseño de capas original
+       SCREEN 4: LEADERBOARD
     ══════════════════════════════════════════════ -->
     <div class="screen lb-screen" id="screen-leaderboard">
 
@@ -155,16 +438,14 @@
           <div class="lb-content-row lb-others-header">
             <span class="lb-player-tag" id="lb-tag-3">Were you guys even playing?</span>
           </div>
-          <div class="lb-others-grid" id="lb-others-grid">
-            <!-- populated dynamically by host.js -->
-          </div>
+          <div class="lb-others-grid" id="lb-others-grid"></div>
         </div>
 
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 5: WINNER — diseño original de victoria
+       SCREEN 5: WINNER
     ══════════════════════════════════════════════ -->
     <div class="screen winner-screen" id="screen-winner">
 
@@ -188,9 +469,7 @@
 
         <section class="winner-lb-section">
           <div class="winner-lb-label">Leaderboard</div>
-          <div class="winner-lb-rows" id="winner-results">
-            <!-- populated dynamically by host.js -->
-          </div>
+          <div class="winner-lb-rows" id="winner-results"></div>
         </section>
 
       </div>
@@ -203,7 +482,108 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 6: LIAR WRITING PHASE (host view)
+       SCREEN 6: LIAR TUTORIAL  (NEW)
+    ══════════════════════════════════════════════ -->
+    <div class="screen" id="screen-liar-tutorial">
+
+      <!-- Header -->
+      <div class="tut-header">
+        <div class="tut-logo">RICO<span>QUIZ</span></div>
+        <div class="tut-badge">🎭 Liar Game</div>
+      </div>
+
+      <!-- Slide viewport -->
+      <div class="tut-body">
+        <div class="tut-track" id="tut-track">
+
+          <!-- ── SLIDE 1: What is it? ── -->
+          <div class="tut-slide">
+            <div class="tut-icon">🎭</div>
+            <div class="tut-slide-title">What is Liar Game?</div>
+            <div class="tut-slide-body">
+              <p class="tut-slide-desc">
+                One player is the <strong style="color:var(--yellow)">Subject</strong> — they answer a personal question about themselves honestly. Everyone else are <strong style="color:var(--yellow)">Liars</strong> who must write a convincing fake answer.
+              </p>
+              <p class="tut-slide-desc">
+                The goal? Fool the group into thinking your lie is the truth — or spot who's lying!
+              </p>
+            </div>
+          </div>
+
+          <!-- ── SLIDE 2: The Roles ── -->
+          <div class="tut-slide">
+            <div class="tut-icon">🎯</div>
+            <div class="tut-slide-title">The Two Roles</div>
+            <div class="tut-slide-body">
+              <div class="tut-info-box">
+                <div class="tut-info-row">
+                  <span class="tut-role-dot">🎯</span>
+                  <p><strong>Subject:</strong> You receive a personal question and answer it <em>honestly</em>. Your goal is to have the most people vote for your real answer.</p>
+                </div>
+                <div class="tut-info-row">
+                  <span class="tut-role-dot">🎭</span>
+                  <p><strong>Liar:</strong> You receive the same question and write a convincing <em>fake</em> answer. The more people you fool, the more points you earn!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SLIDE 3: Voting ── -->
+          <div class="tut-slide">
+            <div class="tut-icon">🗳️</div>
+            <div class="tut-slide-title">How Voting Works</div>
+            <div class="tut-slide-body">
+              <p class="tut-slide-desc">
+                All answers are shown anonymously. Players vote for the answer they think is <strong style="color:var(--yellow)">TRUE</strong>.
+              </p>
+              <p class="tut-slide-desc">
+                The Subject can't vote. Everyone else casts one vote, then the reveal shows who was who — and the points flow!
+              </p>
+            </div>
+          </div>
+
+          <!-- ── SLIDE 4: Points ── -->
+          <div class="tut-slide">
+            <div class="tut-icon">⭐</div>
+            <div class="tut-slide-title">How to Earn Points</div>
+            <div class="tut-slide-body">
+              <div class="tut-pills">
+                <span class="tut-pill gold">🎯 Subject: voted correct → +300 pts each</span>
+                <span class="tut-pill">🎭 Liar: fooling a voter → +500 pts each</span>
+                <span class="tut-pill">🗳️ Voter: correct guess → +200 pts</span>
+              </div>
+              <p class="tut-slide-desc" style="margin-top:0.6rem;">
+                Write creatively, vote carefully, and bluff like a pro. The best liar wins! 🏆
+              </p>
+            </div>
+          </div>
+
+        </div><!-- /tut-track -->
+      </div><!-- /tut-body -->
+
+      <!-- Footer: dots + prev/next + START -->
+      <div class="tut-footer">
+        <div class="tut-dots" id="tut-dots">
+          <div class="tut-dot active" onclick="goToSlide(0)"></div>
+          <div class="tut-dot" onclick="goToSlide(1)"></div>
+          <div class="tut-dot" onclick="goToSlide(2)"></div>
+          <div class="tut-dot" onclick="goToSlide(3)"></div>
+        </div>
+
+        <div class="tut-nav">
+          <button class="tut-btn-prev" id="tut-btn-prev" onclick="tutPrev()" disabled>← Prev</button>
+          <button class="tut-btn-next" id="tut-btn-next" onclick="tutNext()">Next →</button>
+        </div>
+
+        <button class="tut-btn-start" onclick="launchLiarGame()">
+          Start Game ➔
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+       SCREEN 7: LIAR WRITING PHASE (host view)
     ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-writing">
       <div class="liar-header">
@@ -231,7 +611,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 7: LIAR VOTING PHASE (host view)
+       SCREEN 8: LIAR VOTING PHASE (host view)
     ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-voting">
       <div class="liar-header">
@@ -258,7 +638,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-       SCREEN 8: LIAR REVEAL
+       SCREEN 9: LIAR REVEAL
     ══════════════════════════════════════════════ -->
     <div class="screen liar-screen" id="screen-liar-reveal">
       <div class="liar-header">
@@ -324,5 +704,72 @@
 
     <script src="/wsClient.js"></script>
     <script src="/host/host.js"></script>
+
+    <!-- ── Tutorial logic (self-contained) ── -->
+    <script>
+      // ── Tutorial state ───────────────────────────────────────────────────
+      let tutCurrentSlide = 0;
+      const TUT_TOTAL = 4;
+
+      function goToSlide(index) {
+        tutCurrentSlide = Math.max(0, Math.min(TUT_TOTAL - 1, index));
+        document.getElementById("tut-track").style.transform =
+          `translateX(-${tutCurrentSlide * 100}%)`;
+
+        // update dots
+        document.querySelectorAll(".tut-dot").forEach((d, i) => {
+          d.classList.toggle("active", i === tutCurrentSlide);
+        });
+
+        // update nav buttons
+        document.getElementById("tut-btn-prev").disabled = tutCurrentSlide === 0;
+        const nextBtn = document.getElementById("tut-btn-next");
+        nextBtn.textContent = tutCurrentSlide === TUT_TOTAL - 1 ? "Done ✓" : "Next →";
+      }
+
+      function tutNext() {
+        if (tutCurrentSlide < TUT_TOTAL - 1) goToSlide(tutCurrentSlide + 1);
+      }
+
+      function tutPrev() {
+        if (tutCurrentSlide > 0) goToSlide(tutCurrentSlide - 1);
+      }
+
+      // Reset tutorial to slide 1 whenever it's shown
+      function openLiarTutorial() {
+        if (totalPlayers < 3) {
+          alert(`Liar Game needs at least 3 players. Currently: ${totalPlayers}.`);
+          return;
+        }
+        tutCurrentSlide = 0;
+        goToSlide(0);
+        showScreen("screen-liar-tutorial");
+      }
+
+      // Called by "Start Game ➔" button in tutorial footer
+      function launchLiarGame() {
+        ws.send("START_GAME");
+      }
+
+      // ── Override the START GAME button behaviour ─────────────────────────
+      // host.js attaches its own listener; we attach ours AFTER DOMContentLoaded
+      // and use a flag so we can intercept only when liar_game is selected.
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("btn-start-game");
+        // Wrap with a capturing listener that fires before host.js's bubbling one
+        btn.addEventListener(
+          "click",
+          (e) => {
+            if (selectedType === "liar_game") {
+              e.stopImmediatePropagation(); // prevent host.js from sending START_GAME
+              openLiarTutorial();
+            }
+            // For ai_trivia we do nothing — host.js fires normally
+          },
+          true // capture phase → runs before host.js bubble listener
+        );
+      });
+    </script>
+
   </body>
 </html>
