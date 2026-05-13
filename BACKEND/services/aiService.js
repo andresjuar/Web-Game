@@ -33,13 +33,13 @@ async function generateTriviaQuestions(topic, count = 8) {
     // Limpieza de seguridad por si acaso Gemini ignora el mimeType
     text = text.replace(/```json|```/gi, "").trim();
     
-    return JSON.parse(text);
+    return { questions: JSON.parse(text), usedFallback: false };
   } catch (error) {
     console.error("Error detallado:", error);
     //throw error;
   }
   console.log("Using backup questions");
-  return JSON.parse(`[
+  const _fallback = JSON.parse(`[
   {
     "question": "Which company developed VALORANT?",
     "options": ["Valve", "Riot Games", "Epic Games", "Blizzard Entertainment"],
@@ -56,6 +56,7 @@ async function generateTriviaQuestions(topic, count = 8) {
     "correct": 0
   }
 ]`);
+  return { questions: _fallback, usedFallback: true };
 
 /* 
 

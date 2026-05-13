@@ -30,12 +30,14 @@ async function startAiTrivia(room) {
   broadcastToAll(room, "LOADING", { message: "Generating questions..." });
 
   try {
-    room.questions = await generateTriviaQuestions(room.topic, room.numQuestions);
+    const { questions, usedFallback } = await generateTriviaQuestions(room.topic, room.numQuestions);
+    room.questions = questions;
     room.currentQuestion = -1;
     room.state = "ready";
 
     broadcastToAll(room, "GAME_READY", {
       totalQuestions: room.questions.length,
+      usedFallback,
     });
 
     sendToHost(room, "AWAITING_NEXT", {

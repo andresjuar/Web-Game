@@ -260,13 +260,22 @@ function animateLoadingBar() {
   }, 500);
 }
 
-ws.on("GAME_READY", () => {
+ws.on("GAME_READY", ({ usedFallback }) => {
   // Completar la barra y esperar un momento antes de mostrar el botón
   document.getElementById("loading-bar").style.width = "100%";
-  document.getElementById("loading-status").textContent = "Ready!";
+
+  const status = document.getElementById("loading-status");
+  if (usedFallback) {
+    status.textContent = "⚠️ AI couldn't generate questions — using standard questions instead.";
+    status.style.color = "#ffcc00";
+  } else {
+    status.textContent = "Ready!";
+    status.style.color = "";
+  }
+
   setTimeout(() => {
     ws.send("NEXT_QUESTION");
-  }, 1000);
+  }, usedFallback ? 3000 : 1000);
 });
 
 // ── Question ──────────────────────────────────────────────────────────────
